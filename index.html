@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Roi Vincent P. Solar | Full-Stack Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=11">
+  <noscript>
+    <style>.hero-content>*,.hero-profile-container{opacity:1 !important;}</style>
+  </noscript>
+</head>
+
+<body>
+
+  <!-- Loading Screen: shown while background frames preload -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-name">ROI VINCENT P. SOLAR</div>
+      <div class="loading-bar-track">
+        <div class="loading-bar-fill" id="loadingBarFill"></div>
+      </div>
+      <div class="loading-percentage" id="loadingPercentage">0%</div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Smooth Scroll Background Canvas -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Floating Glass Capsule Header / Navigation -->
+  <header class="header-capsule-wrapper">
+    <nav class="glass-capsule nav-capsule" aria-label="Main Navigation">
+      <a href="#hero" class="brand-logo">
+        <span class="brand-initials">RS</span>
+        <span class="brand-name">Roi Vincent P. Solar</span>
+      </a>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#about" class="nav-link">ABOUT</a>
+        <a href="#skills" class="nav-link">SKILLS</a>
+        <a href="#certifications" class="nav-link">CERTIFICATIONS</a>
+        <a href="#projects" class="nav-link">PROJECTS</a>
+        <a href="#experience" class="nav-link">EXPERIENCE</a>
+        <a href="#contact" class="nav-link">CONTACT</a>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Theme Toggle Button -->
+        <button id="themeToggleBtn" class="theme-toggle-capsule" aria-label="Toggle Light and Dark Mode"
+          title="Toggle Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span class="theme-label">Theme</span>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button id="mobileMenuBtn" class="mobile-toggle" aria-label="Toggle mobile menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="content-wrapper">
+
+    <!-- 01 FIRST PAGE / HERO SECTION -->
+    <section id="hero" class="section-hero">
+      <div class="glass-capsule hero-capsule">
+        <div class="hero-content">
+          <div class="status-pill-badge">
+            <span class="pulse-indicator"></span>
+            AVAILABLE FOR SELECT ROLES & COLLABORATIONS
+          </div>
+
+          <div class="hero-role-tag">FULL-STACK DEVELOPER • WEB & MOBILE</div>
+
+          <h1 class="hero-title">ROI VINCENT P. SOLAR</h1>
+
+          <p class="hero-description">
+            Full-Stack Developer specializing in <strong>Flutter • Firebase • Web</strong>. I build useful, dependable
+            software for real people — calm, clear, and ready for what's next.
+          </p>
+
+          <div class="hero-address-capsule">
+            <svg class="icon-location" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>IBAAN, BATANGAS, PHILIPPINES</span>
+          </div>
+
+          <div class="hero-cta-group">
+            <a href="#projects" class="btn-capsule btn-primary">
+              <span>View Projects</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-icon">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+            <a href="#contact" class="btn-capsule btn-secondary">Get in Touch</a>
+          </div>
+        </div>
+
+        <div class="hero-profile-container">
+          <div class="profile-glow-ring"></div>
+          <div class="profile-image-frame glass-capsule">
+            <!-- Dynamic profile: profile2.webp for dark, profile1.webp for light -->
+            <img id="profileImg" src="assets/pictures/profile2.webp" alt="Roi Vincent P. Solar" class="profile-photo">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 ABOUT ME SECTION -->
+    <section id="about" class="section-container">
+      <div class="glass-capsule about-capsule">
+        <div class="section-header">
+          <span class="section-badge">02 ABOUT ME</span>
+          <h2 class="section-title">Good software feels inevitable.</h2>
+          <div class="title-divider"></div>
+        </div>
+
+        <div class="about-narrative">
+          <p>
+            I turn complex requirements into focused, dependable software. My work sits at the intersection of
+            thoughtful product decisions, clean implementation, and the small details that make an interface feel
+            obvious to use.
+          </p>
+          <p>
+            My path into technology began with a curiosity about how digital tools work under the surface. Today, I
+            enjoy building products end-to-end — from shaping the data model and interaction flow to shipping the
+            polished interface that people actually use.
+          </p>
+        </div>
+
+        <!-- Principles Grid -->
+        <div class="principles-grid">
+          <div class="glass-capsule-sub principle-card">
+            <div class="principle-number">01</div>
+            <div class="principle-badge">CURIOUS BY DEFAULT</div>
+            <h3 class="principle-title">CLEAR THINKING</h3>
+            <p class="principle-desc">Make the problem smaller before making the solution bigger.</p>
+          </div>
+
+          <div class="glass-capsule-sub principle-card">
+            <div class="principle-number">02</div>
+            <div class="principle-badge">DETAIL-ORIENTED</div>
+            <h3 class="principle-title">USEFUL CRAFT</h3>
+            <p class="principle-desc">Write code that respects the person on the other side of the screen.</p>
+          </div>
+
+          <div class="glass-capsule-sub principle-card">
+            <div class="principle-number">03</div>
+            <div class="principle-badge">TEAM-MINDED</div>
+            <h3 class="principle-title">KEEP LEARNING</h3>
+            <p class="principle-desc">Stay curious, test assumptions, and share what works.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 SKILLS SECTION -->
+    <section id="skills" class="section-container">
+      <div class="glass-capsule skills-capsule">
+        <div class="section-header">
+          <span class="section-badge">03 SKILLS & EXPERTISE</span>
+          <h2 class="section-title">The stack behind the signal.</h2>
+          <p class="section-subtitle">I choose tools for the problem in front of me — balancing speed, maintainability,
+            and the experience of the people who will live with the result.</p>
+          <div class="title-divider"></div>
+        </div>
+
+        <!-- Languages -->
+        <div class="skill-category-group">
+          <h3 class="category-heading">LANGUAGES</h3>
+          <div class="skills-pill-cloud">
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+                alt="JavaScript" class="tech-icon"><span>JavaScript</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
+                alt="TypeScript" class="tech-icon"><span>TypeScript</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" alt="C#"
+                class="tech-icon"><span>C#</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python"
+                class="tech-icon"><span>Python</span></div>
+            <div class="skill-pill"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg"
+                alt="Java" class="tech-icon"><span>Java</span></div>
+            <div class="skill-pill"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dart/dart-original.svg"
+                alt="Dart" class="tech-icon"><span>Dart</span></div>
+            <div class="skill-pill"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg"
+                alt="PHP" class="tech-icon"><span>PHP</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5"
+                class="tech-icon"><span>HTML5</span></div>
+            <div class="skill-pill"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+                alt="CSS3" class="tech-icon"><span>CSS3</span></div>
+            <div class="skill-pill"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/xml/xml-original.svg"
+                alt="XML" class="tech-icon"><span>XML</span></div>
+          </div>
+        </div>
+
+        <!-- Frameworks -->
+        <div class="skill-category-group">
+          <h3 class="category-heading">FRAMEWORKS</h3>
+          <div class="skills-pill-cloud">
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React"
+                class="tech-icon"><span>React</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" alt="Flutter"
+                class="tech-icon"><span>Flutter</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React Native"
+                class="tech-icon"><span>React Native</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" alt="Next.js"
+                class="tech-icon"><span>Next.js</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg" alt="Vite"
+                class="tech-icon"><span>Vite</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js"
+                class="tech-icon"><span>Node.js</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12.262 16.666h1.146l6.975-9.325H19.22zm9.778 1.441v.004l-4.334-5.706-.557.74 4.873 6.682H.945V4.173h9.505l5.026 6.7.574-.772-4.374-5.928h.003l-.719-.945H0v17.544h24zM10.917 8.705a3.8 3.8 0 0 0-1.292-1.183q-.796-.45-1.916-.45c-.746 0-1.37.14-1.906.424a3.76 3.76 0 0 0-1.31 1.12 4.9 4.9 0 0 0-.75 1.581 7.17 7.17 0 0 0 0 3.696c.148.567.402 1.101.75 1.573a3.5 3.5 0 0 0 1.31 1.066q.803.39 1.906.389 1.77 0 2.739-.868.966-.867 1.328-2.457h-1.139q-.271 1.084-.977 1.734-.704.651-1.952.65-.812 0-1.392-.342a3.1 3.1 0 0 1-.957-.869 3.5 3.5 0 0 1-.551-1.182 5 5 0 0 1-.17-1.133 9 9 0 0 0-.015-.286 4.5 4.5 0 0 1 .015-.829c.047-.418.147-.83.296-1.223A3.7 3.7 0 0 1 5.54 9.05a2.9 2.9 0 0 1 .922-.742q.541-.28 1.246-.28c.47 0 .869.093 1.23.28q.541.281.922.742.379.461.587 1.057t.225 1.246H5.625l.004.957h6.182a7.3 7.3 0 0 0-.18-1.924 4.9 4.9 0 0 0-.715-1.68z" />
+              </svg><span>Express</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg"
+                alt="TailwindCSS" class="tech-icon"><span>TailwindCSS</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg" alt="WordPress"
+                class="tech-icon"><span>WordPress</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/woocommerce/woocommerce-original.svg"
+                alt="WooCommerce" class="tech-icon"><span>WooCommerce</span></div>
+          </div>
+        </div>
+
+        <!-- Data & Tools -->
+        <div class="skill-category-group">
+          <h3 class="category-heading">DATA & TOOLS</h3>
+          <div class="skills-pill-cloud">
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" alt="Firebase"
+                class="tech-icon"><span>Firebase</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL"
+                class="tech-icon"><span>MySQL</span></div>
+            <div class="skill-pill"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+                alt="Git" class="tech-icon"><span>Git</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg" alt="Supabase"
+                class="tech-icon"><span>Supabase</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL"
+                class="tech-icon"><span>PostgreSQL</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg" alt="Prisma"
+                class="tech-icon"><span>Prisma</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/google-gemini.svg" alt="Gemini API"
+                class="tech-icon"><span>Gemini API</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/n8n/n8n-original.svg" alt="n8n"
+                class="tech-icon"><span>n8n</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <circle cx="16.5" cy="16.5" r="3"></circle>
+                <line x1="20.5" y1="20.5" x2="18.9" y2="18.9"></line>
+              </svg><span>Retrieval-Augmented Generation (RAG)</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <circle cx="5" cy="6" r="2"></circle>
+                <circle cx="19" cy="6" r="2"></circle>
+                <circle cx="12" cy="18" r="2"></circle>
+                <line x1="6.7" y1="7.1" x2="17.3" y2="7.1"></line>
+                <line x1="6.2" y1="7.8" x2="10.9" y2="16.3"></line>
+                <line x1="17.8" y1="7.8" x2="13.1" y2="16.3"></line>
+              </svg><span>Vector Search (pgvector)</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M4 11a9 9 0 0 1 9 9"></path>
+                <path d="M4 4a16 16 0 0 1 16 16"></path>
+                <circle cx="5" cy="19" r="1"></circle>
+              </svg><span>RESTful APIs</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M11.9998.3598c-2.8272 0-5.1456 2.1733-5.3793 4.94a5.4117 5.4117 0 00-1.2207-.1401C2.418 5.1597 0 7.5779 0 10.5603c0 2.2203 1.341 4.1274 3.2568 4.957a5.3734 5.3734 0 00-.7372 2.7227c0 2.9823 2.4175 5.4002 5.4002 5.4002 1.6627 0 3.1492-.7522 4.1397-1.934.9906 1.1818 2.4773 1.934 4.1398 1.934 2.983 0 5.4004-2.418 5.4004-5.4002 0-.9719-.258-1.883-.7073-2.6708C22.7283 14.7068 24 12.8418 24 10.6795c0-2.9823-2.4175-5.4006-5.3998-5.4006-.417 0-.8223.049-1.2121.1384C17.2112 2.5949 14.867.3598 11.9998.3598zm-5.717 6.8683h10.5924c.7458 0 1.352.605 1.352 1.3487v7.6463c0 .7438-.6062 1.3482-1.352 1.3482h-3.6085l-7.24 3.5491 1.1008-3.5491h-.8447c-.7458 0-1.3522-.6044-1.3522-1.3482V8.5768c0-.7438.6064-1.3487 1.3522-1.3487Z" />
+              </svg><span>WebRTC</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="#3448C5">
+                <path
+                  d="M24 14.8598c0 2.1729-1.3757 3.974-3.5903 4.6996l-.0995.0318V17.989c1.3777-.5805 2.1869-1.7275 2.1869-3.1291-.0072-2-1.6087-3.6288-3.6082-3.6699h-.5964l-.1432-.5686c-.7025-2.8996-3.2886-4.9489-6.2721-4.97a6.3915 6.3915 0 0 0-5.811 3.664l-.1828.3757-.4175.0437a4.4311 4.4311 0 0 0-3.3052 2.088c-1.2803 2.0856-.6274 4.8143 1.4583 6.0947v1.6897h-.01l-.149-.0675a5.9402 5.9402 0 0 1-3.3658-4.3494c-.5787-3.2291 1.57-6.3161 4.7991-6.8948a7.8766 7.8766 0 0 1 6.9839-4.149c3.4724.025 6.535 2.28 7.5901 5.5883 2.5789.3366 4.5138 2.5245 4.5327 5.1251zm-15.3176-1.322h.5647a.0656.0656 0 0 0 .0457-.1113L7.084 11.2158l-.0007-.0007a.0656.0656 0 0 0-.0927.0007L4.78 13.4265a.0656.0656 0 0 0 .0477.1113h.5566a.0656.0656 0 0 1 .0657.0656v5.0574c0 .6588.534 1.1928 1.1928 1.1928H9.247a.0656.0656 0 0 0 .0457-.1113l-.33-.33a1.1928 1.1928 0 0 1-.348-.839v-4.97a.0676.0676 0 0 1 .0676-.0655zm9.769 2.5466h.5667a.0655.0655 0 0 0 .0457-.1133l-2.2107-2.2087-.0015-.0015a.0636.0636 0 0 0-.0899.0015L14.551 15.971a.0657.0657 0 0 0 .0457.1133h.5567a.0656.0656 0 0 1 .0656.0656v2.5108c0 .6588.534 1.1928 1.1928 1.1928h2.6063a.0655.0655 0 0 0 .0457-.1113l-.33-.33a1.1928 1.1928 0 0 1-.348-.839V16.15a.0656.0656 0 0 1 .0657-.0656zm-4.8844-1.2743h.5646a.0656.0656 0 0 0 .0477-.1114l-2.2107-2.2027-.0006-.0006a.0656.0656 0 0 0-.0928.0006l-2.2087 2.2068a.0656.0656 0 0 0 .0457.1113h.5626a.0676.0676 0 0 1 .0657.0676v3.7791c0 .6588.534 1.1928 1.1928 1.1928h2.5983a.0656.0656 0 0 0 .0477-.1113l-.332-.33a1.193 1.193 0 0 1-.346-.839v-3.6956c0-.0366.0291-.0665.0657-.0676z" />
+              </svg><span>Cloudinary</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="#10b981">
+                <circle cx="12" cy="12" r="9" />
+              </svg><span>Semaphore</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"
+                class="tech-icon"><span>GitHub</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M0 20.084c.043.53.23 1.063.718 1.778.58.849 1.576 1.315 2.303.567.49-.505 5.794-9.776 8.35-13.29a.761.761 0 011.248 0c2.556 3.514 7.86 12.785 8.35 13.29.727.748 1.723.282 2.303-.567.57-.835.728-1.42.728-2.046 0-.426-8.26-15.798-9.092-17.078-.8-1.23-1.044-1.498-2.397-1.542h-1.032c-1.353.044-1.597.311-2.398 1.542C8.267 3.991.33 18.758 0 19.77Z" />
+              </svg><span>Expo Go</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="#0B996E">
+                <path
+                  d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zM7.2 4.8h5.747c2.34 0 3.895 1.406 3.895 3.516 0 1.022-.348 1.862-1.09 2.588C17.189 11.812 18 13.22 18 14.785c0 2.86-2.64 5.016-6.164 5.016H7.199v-15zm2.085 1.952v5.537h.07c.233-.432.858-.796 2.249-1.226 2.039-.659 3.037-1.52 3.037-2.655 0-.998-.766-1.656-1.924-1.656H9.285zm4.87 5.266c-.766.385-1.67.748-2.76 1.11-1.229.387-2.11 1.386-2.11 2.407v2.315h2.365c2.387 0 4.149-1.34 4.149-3.155 0-1.067-.625-2.087-1.645-2.677z" />
+              </svg><span>Brevo</span></div>
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/uptimerobot.svg" alt="Uptime Robot"
+                class="tech-icon"><span>Uptime Robot</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="#458CF5">
+                <path
+                  d="M8.548 1.156L6.832 2.872v1.682h1.716zm0 3.398v.035H6.832v-.035H3.386L0 7.844v3.577h2.826V8.94c0-.525.429-.954.954-.954h16.476c.525 0 .954.43.954.954v2.48h2.754V7.844l-3.386-3.29H17.3v.035h-1.717v-.035zm7.035 0H17.3V2.872l-1.717-1.716zM8.679 1.188V2.84h6.773V1.188zm11.471 7.07a.834.834 0 00-.132.01l-.543.002c-5.216.014-10.432-.008-15.648.01-.435-.063-.794.436-.716.883v2.264h17.812c-.016-.888.045-1.782-.034-2.666-.104-.342-.427-.502-.739-.502zm-15.422.634a.689.698 0 01.689.698.689.698 0 01-.689.697.689.698 0 01-.688-.697.689.698 0 01.688-.698zm2.134 0a.689.698 0 01.689.698.689.698 0 01-.689.697.689.698 0 01-.688-.697.689.698 0 01.688-.698zM.036 11.645v9.156c0 1.05.858 1.908 1.907 1.908h.883V11.645zm21.174 0v11.064h.882c1.05 0 1.908-.858 1.908-1.908v-9.156zM4.057 13.133v6.85h6.137v-6.85zm13.243.021v3.777l-1.708.977-1.708-.977v-3.758a4.006 4.006 0 000 7.23v2.441h3.457v-2.442a4.006 4.006 0 00-.041-7.248zm-13.243 8.26v1.43h7.925v-1.43z" />
+              </svg><span>Google Search Console</span></div>
+          </div>
+        </div>
+
+        <!-- Deployment -->
+        <div class="skill-category-group">
+          <h3 class="category-heading">DEPLOYMENT</h3>
+          <div class="skills-pill-cloud">
+            <div class="skill-pill"><img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/netlify/netlify-original.svg" alt="Netlify"
+                class="tech-icon"><span>Netlify</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 1L24 22H0L12 1Z" />
+              </svg><span>Vercel</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M18.263.007c-3.121-.147-5.744 2.109-6.192 5.082-.018.138-.045.272-.067.405-.696 3.703-3.936 6.507-7.827 6.507-1.388 0-2.691-.356-3.825-.979a.2024.2024 0 0 0-.302.178V24H12v-8.999c0-1.656 1.338-3 2.987-3h2.988c3.382 0 6.103-2.817 5.97-6.244-.12-3.084-2.61-5.603-5.682-5.75" />
+              </svg><span>Render</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="#7738C8">
+                <path
+                  d="M16.4323 6.3262a5.2924 5.2924 0 0 0-.7638.0611l1.5511.6818zm.5736.2641.8686.7408.9765-.4535c-.597-.2081-1.2097-.3026-1.8451-.2873Zm-12.8836.1375c-.973.2083-1.868.691-2.59 1.4111C.8304 8.841.3538 9.707.1358 10.65l.0961-.0098A5.2331 5.2331 0 0 0 0 12.1842c0 .2688.0204.534.06.7947l.1845-.1218c.174 1.0753.677 2.0659 1.4625 2.8497.5708.5713 1.2509.993 1.9928 1.2478l.1536-2.6135a2.6386 2.6386 0 0 1-.4318-.3498c-.5306-.529-.8229-1.2337-.8229-1.984 0-.3508.0655-.6925.1894-1.0118l-.133.0755a2.8303 2.8303 0 0 1 .5255-.8029l-.2406-.053a2.8635 2.8635 0 0 1 .3053-.3643c.244-.244.5383-.4367.8614-.572l.049.4955a2.8008 2.8008 0 0 1 .3786-.179 2.88 2.88 0 0 1 1.2338-.1855l.0009-.0006c.4876.0325.9545.1862 1.3494.4398.1567.1006.302.2169.4328.348l5.9407 5.706c.7683.7702 1.7452 1.2648 2.8114 1.4383l.0957.2778c.2508.0363.5062.0547.7649.0547.763 0 1.5001-.1635 2.173-.4717l-2.352-1.9831c-.4203-.0257-.8256-.1412-1.183-.3334l-.1142-.3266a2.5998 2.5998 0 0 1-.4996-.3886c-1.9797-1.9018-3.9604-3.8026-5.94-5.7045a5.1265 5.1265 0 0 0-1.7668-1.1515c-.0042-.0017-.0087-.0032-.0128-.005A5.2593 5.2593 0 0 0 5.574 6.959c-.495 0-.9793.07-1.4428.203zm12.4437.2664c-1.1716.1327-2.2569.6533-3.1032 1.5011-.497.4768-.9935.9541-1.4902 1.4313l1.745 1.685 1.4418-1.3868c.538-.5357 1.2382-.8339 1.974-.8419.0223-.0013.0444.0002.0666.0002.7354.0095 1.4236.2994 1.9416.8202.5311.5303.8237 1.2344.8237 1.9826a2.7884 2.7884 0 0 1-.2303 1.1135l.2154-.0136a2.7871 2.7871 0 0 1-.6317.9667c-.5076.5073-1.2296.7981-1.981.7981-.067 0-.1336-.003-.2-.0076l2.3687 1.987a5.2153 5.2153 0 0 0 1.5261-1.0618c.8132-.8128 1.3246-1.8457 1.4804-2.9637l-.1905.011c.0895-.5608.0716-.9823.0477-1.27l-4.4595-4.041.0178-.0143-.0321.0064zm2.4011.196-.7966.513 4.4659 4.1044c-.0895-1.2528-.6196-2.4193-1.518-3.3172-.6117-.612-1.348-1.053-2.1513-1.3002Zm-15.1346 3.12c.0303.2306.0754.4573.1352.6799l.5484-.1038zm19.1478 1.9606.1158.9891a8.4392 8.4392 0 0 0 .399-.7838zm-13.9673.4945-1.4333 1.3783a2.8112 2.8112 0 0 1-1.4736.7766 2.91 2.91 0 0 1-.5372.0504c-.5624 0-1.1102-.1676-1.564-.4699l-.1639 2.6176a5.2243 5.2243 0 0 0 2.4253.2472l.514-.6115 2.5787-.9576 1.401-1.3442ZM24 13.126l-1.0916.857.8438-.2816c.0973-.1872.18-.3794.2478-.5754zm-7.4458 1.0525.0042.5581.689-.5694a5.3413 5.3413 0 0 0-.693.0113zm-6.487 1.6948-2.6192.9825.5685.399c.6917-.2594 1.327-.6654 1.8661-1.2044ZM6.8415 16.943l-.575.6844a5.189 5.189 0 0 0 .6794-.1362z" />
+              </svg><span>InfinityFree</span></div>
+            <div class="skill-pill"><svg class="tech-icon" viewBox="0 0 24 24" fill="#1BDBDB">
+                <path
+                  d="M20.702 2.29c-2.494-1.554-5.778-1.187-8.706.654C9.076 1.104 5.79.736 3.3 2.29c-3.941 2.463-4.42 8.806-1.07 14.167 2.47 3.954 6.333 6.269 9.77 6.226 3.439.043 7.301-2.273 9.771-6.226 3.347-5.361 2.872-11.704-1.069-14.167zM4.042 15.328a12.838 12.838 0 01-1.546-3.541 10.12 10.12 0 01-.336-3.338c.15-1.98.956-3.524 2.27-4.345 1.315-.822 3.052-.87 4.903-.137.281.113.556.24.825.382A15.11 15.11 0 007.5 7.54c-2.035 3.255-2.655 6.878-1.945 9.765a13.247 13.247 0 01-1.514-1.98zm17.465-3.541a12.866 12.866 0 01-1.547 3.54 13.25 13.25 0 01-1.513 1.984c.635-2.589.203-5.76-1.353-8.734a.39.39 0 00-.563-.153l-4.852 3.032a.397.397 0 00-.126.546l.712 1.139a.395.395 0 00.547.126l3.145-1.965c.101.306.203.606.28.916.296 1.086.41 2.214.335 3.337-.15 1.982-.956 3.525-2.27 4.347a4.437 4.437 0 01-2.25.65h-.101a4.432 4.432 0 01-2.25-.65c-1.314-.822-2.121-2.365-2.27-4.347-.074-1.123.039-2.251.335-3.337a13.212 13.212 0 014.05-6.482 10.148 10.148 0 012.849-1.765c1.845-.733 3.586-.685 4.9.137 1.316.822 2.122 2.365 2.271 4.345a10.146 10.146 0 01-.33 3.334z" />
+              </svg><span>GoDaddy</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 CERTIFICATIONS SECTION -->
+    <section id="certifications" class="section-container">
+      <div class="glass-capsule certs-capsule">
+        <div class="section-header">
+          <span class="section-badge">04 CERTIFICATIONS</span>
+          <h2 class="section-title">PROOF OF SKILLS, IN PUBLIC</h2>
+          <p class="section-subtitle">Selected credentials that reflect my foundation in systems, development, and
+            business technology.</p>
+          <div class="title-divider"></div>
+        </div>
+
+        <div class="certs-grid">
+          <!-- Cert 1 -->
+          <div class="glass-capsule-sub cert-card">
+            <div class="cert-header">
+              <span class="cert-num">01</span>
+              <span class="cert-issuer">CISCO</span>
+            </div>
+            <h3 class="cert-title">CISCO NETWORKING ESSENTIALS</h3>
+            <a href="assets/certifications/hardware-networking.pdf" target="_blank" rel="noopener noreferrer"
+              class="btn-capsule btn-cert-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-pdf">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              <span>VIEW PDF</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ext">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Cert 2 -->
+          <div class="glass-capsule-sub cert-card">
+            <div class="cert-header">
+              <span class="cert-num">02</span>
+              <span class="cert-issuer">SKILLSOFT</span>
+            </div>
+            <h3 class="cert-title">HTML ESSENTIALS</h3>
+            <a href="assets/certifications/html-essentials.pdf" target="_blank" rel="noopener noreferrer"
+              class="btn-capsule btn-cert-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-pdf">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              <span>VIEW PDF</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ext">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Cert 3 -->
+          <div class="glass-capsule-sub cert-card">
+            <div class="cert-header">
+              <span class="cert-num">03</span>
+              <span class="cert-issuer">SKILLSOFT</span>
+            </div>
+            <h3 class="cert-title">JAVASCRIPT ESSENTIALS</h3>
+            <a href="assets/certifications/javascript-essentials.pdf" target="_blank" rel="noopener noreferrer"
+              class="btn-capsule btn-cert-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-pdf">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              <span>VIEW PDF</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ext">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Cert 4 -->
+          <div class="glass-capsule-sub cert-card">
+            <div class="cert-header">
+              <span class="cert-num">04</span>
+              <span class="cert-issuer">LINUX FOUNDATION / TRAINING</span>
+            </div>
+            <h3 class="cert-title">LINUX ADMINISTRATION</h3>
+            <a href="assets/certifications/linux-admin.pdf" target="_blank" rel="noopener noreferrer"
+              class="btn-capsule btn-cert-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-pdf">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              <span>VIEW PDF</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ext">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Cert 5 -->
+          <div class="glass-capsule-sub cert-card">
+            <div class="cert-header">
+              <span class="cert-num">05</span>
+              <span class="cert-issuer">SKILLSOFT</span>
+            </div>
+            <h3 class="cert-title">PYTHON ESSENTIALS</h3>
+            <a href="assets/certifications/python-essentials.pdf" target="_blank" rel="noopener noreferrer"
+              class="btn-capsule btn-cert-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-pdf">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              <span>VIEW PDF</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ext">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Cert 6 -->
+          <div class="glass-capsule-sub cert-card">
+            <div class="cert-header">
+              <span class="cert-num">06</span>
+              <span class="cert-issuer">SAP</span>
+            </div>
+            <h3 class="cert-title">SAP S/4HANA</h3>
+            <a href="assets/certifications/sap-s4hana.pdf" target="_blank" rel="noopener noreferrer"
+              class="btn-capsule btn-cert-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-pdf">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              <span>VIEW PDF</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ext">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 PROJECTS SECTION -->
+    <section id="projects" class="section-container">
+      <div class="glass-capsule projects-capsule">
+        <div class="section-header">
+          <span class="section-badge">05 PROJECTS</span>
+          <h2 class="section-title">A FEW THINGS I'VE SHAPED.</h2>
+          <p class="section-subtitle">Selected work that best represents how I think, collaborate, and turn an open
+            question into a useful system.</p>
+          <div class="title-divider"></div>
+        </div>
+
+        <div class="projects-list">
+
+          <!-- PROJECT: Shortlist (added above NexaBase, latest project) -->
+          <article class="glass-capsule-sub project-card">
+            <div class="project-content-col">
+              <div class="project-tag-row">
+                <span class="project-pill-type">WEB APPLICATION</span>
+              </div>
+
+              <h3 class="project-title">Shortlist: AI Job Application Assistant</h3>
+
+              <p class="project-desc">
+                An AI job application assistant that scores how well a job post fits your resume before you spend an
+                hour applying. Paste a link or the description, and an n8n workflow with Google Gemini returns a fit
+                score out of 100, matched skills, gaps to address and a tailored cover letter, then tracks every
+                application on a drag and drop board from Saved to Offer.
+              </p>
+
+              <div class="project-meta-box">
+                <div class="meta-label">TOOLS & TECH</div>
+                <div class="meta-tags">
+                  <span class="meta-tag">Next.js</span>
+                  <span class="meta-tag">TypeScript</span>
+                  <span class="meta-tag">Tailwind CSS</span>
+                  <span class="meta-tag">Supabase</span>
+                  <span class="meta-tag">n8n</span>
+                  <span class="meta-tag">Gemini API</span>
+                  <span class="meta-tag">Render</span>
+                  <span class="meta-tag">Vercel</span>
+                </div>
+              </div>
+
+              <div class="project-meta-box">
+                <p class="meta-text">
+                  Moved the slow work (reading the job post, PDF resume extraction and the Gemini call) into an n8n
+                  workflow on Render, so the automation can change without redeploying the site. The browser never
+                  sends a user ID: the server verifies the session and passes it to n8n behind a shared secret, and
+                  row level security plus composite foreign keys keep every resume and application scoped to its
+                  owner, even when n8n writes with the service role.
+                </p>
+              </div>
+
+              <div class="project-actions">
+                <a href="https://shortlist-ruddy.vercel.app" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-primary btn-sm">
+                  <span>Get Access</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1CzdItBBCV01OuW3XQfw4Za2cZo0IGAv-?usp=sharing" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <span>Live Demo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </a>
+                <a href="https://github.com/RoiSolarr/shortlist" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-sm">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Gallery 8 photos (assets/project10) -->
+            <div class="project-gallery-col">
+              <div class="gallery-carousel" data-gallery="p10">
+                <div class="gallery-main-view">
+                  <img src="assets/project10/01_login.webp" alt="Shortlist Preview" class="gallery-active-img"
+                    loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-thumbnails">
+                  <img src="assets/project10/thumbs/01_login.webp" data-full="assets/project10/01_login.webp" alt="Login" class="thumb active" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project10/thumbs/02_forgot_password.webp" data-full="assets/project10/02_forgot_password.webp" alt="Recovery" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project10/thumbs/03_create_account.webp" data-full="assets/project10/03_create_account.webp" alt="Create" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project10/thumbs/04_job_dashboard.webp" data-full="assets/project10/04_job_dashboard.webp" alt="Analyze" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project10/thumbs/05_job_search.webp" data-full="assets/project10/05_job_search.webp" alt="Board" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project10/thumbs/06_candidate_detail.webp" data-full="assets/project10/06_candidate_detail.webp" alt="Job Detail" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project10/thumbs/07_resume.webp" data-full="assets/project10/07_resume.webp" alt="Resume" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project10/thumbs/08_account_settings.webp" data-full="assets/project10/08_account_settings.webp" alt="Account" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT: NexaBase (added above Sneakervault - latest project) -->
+          <article class="glass-capsule-sub project-card">
+            <div class="project-content-col">
+              <div class="project-tag-row">
+                <span class="project-pill-type">WEB APPLICATION</span>
+              </div>
+
+              <h3 class="project-title">NexaBase: AI Knowledge Base & Document Search</h3>
+
+              <p class="project-desc">
+                A secure RAG-powered knowledge base platform that makes document search and team knowledge-sharing
+                easier to manage, with a Supabase pgvector store, Google Gemini embeddings, and chat answers that
+                cite the exact passage they came from.
+              </p>
+
+              <div class="project-meta-box">
+                <div class="meta-label">TOOLS & TECH</div>
+                <div class="meta-tags">
+                  <span class="meta-tag">Next.js</span>
+                  <span class="meta-tag">TypeScript</span>
+                  <span class="meta-tag">Supabase</span>
+                  <span class="meta-tag">Prisma</span>
+                  <span class="meta-tag">Gemini API</span>
+                  <span class="meta-tag">Vercel</span>
+                </div>
+              </div>
+
+              <div class="project-meta-box">
+                <p class="meta-text">
+                  Access control uses Supabase row-level security, scoping every query to the signed-in user at the
+                  database layer instead of trusting the client. Documents are chunked into ~1000-character passages
+                  with overlap, so pgvector search returns passages precise enough to cite, not just summarize, and
+                  each response streams as it generates.
+                </p>
+              </div>
+
+              <div class="project-actions">
+                <a href="https://ragwebapp.vercel.app/" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-primary btn-sm">
+                  <span>Get Access</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1ir7NeVcgwsvfT6Ox2pFQlO8fVGObcYcf?usp=sharing" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <span>Live Demo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </a>
+                <a href="https://github.com/RoiSolarr/ragwebapp" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-sm">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Gallery 11 photos (assets/project9) -->
+            <div class="project-gallery-col">
+              <div class="gallery-carousel" data-gallery="p9">
+                <div class="gallery-main-view">
+                  <img src="assets/project9/photo1_laptop.webp" alt="NexaBase Preview" class="gallery-active-img"
+                    loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-thumbnails">
+                  <img src="assets/project9/thumbs/photo1_laptop.webp" data-full="assets/project9/photo1_laptop.webp" alt="Thumb 1" class="thumb active" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project9/thumbs/photo2_laptop.webp" data-full="assets/project9/photo2_laptop.webp" alt="Thumb 2" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project9/thumbs/photo3_laptop.webp" data-full="assets/project9/photo3_laptop.webp" alt="Thumb 3" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project9/thumbs/photo4_laptop.webp" data-full="assets/project9/photo4_laptop.webp" alt="Thumb 4" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project9/thumbs/photo5_laptop.webp" data-full="assets/project9/photo5_laptop.webp" alt="Thumb 5" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project9/thumbs/photo6_laptop.webp" data-full="assets/project9/photo6_laptop.webp" alt="Thumb 6" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project9/thumbs/photo7_laptop.webp" data-full="assets/project9/photo7_laptop.webp" alt="Thumb 7" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project9/thumbs/photo8_laptop.webp" data-full="assets/project9/photo8_laptop.webp" alt="Thumb 8" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project9/thumbs/photo9_laptop.webp" data-full="assets/project9/photo9_laptop.webp" alt="Thumb 9" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project9/thumbs/photo10_laptop.webp" data-full="assets/project9/photo10_laptop.webp" alt="Thumb 10" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project9/thumbs/photo11_laptop.webp" data-full="assets/project9/photo11_laptop.webp" alt="Thumb 11" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 1 -->
+          <article class="glass-capsule-sub project-card">
+            <div class="project-content-col">
+              <div class="project-tag-row">
+                <span class="project-pill-type">MOBILE APPLICATION</span>
+              </div>
+
+              <h3 class="project-title">Sneakervault: Sneaker Inventory & Portfolio Tracker</h3>
+
+              <p class="project-desc">
+                A secure sneaker inventory and analytics platform that makes collection tracking and portfolio valuation
+                easier to manage with a Supabase cloud database, Brevo notification services, and real-time wear-log
+                insights.
+              </p>
+
+              <div class="project-meta-box">
+                <div class="meta-label">TOOLS & TECH</div>
+                <div class="meta-tags">
+                  <span class="meta-tag">Flutter</span>
+                  <span class="meta-tag">Dart</span>
+                  <span class="meta-tag">Supabase</span>
+                  <span class="meta-tag">Brevo</span>
+                  <span class="meta-tag">Netlify</span>
+                </div>
+              </div>
+
+              <div class="project-meta-box">
+                <p class="meta-text">
+                  Built the authentication layer using Supabase's row-level security instead of custom middleware, so
+                  every query is scoped to the owning user at the database layer rather than trusted to the client —
+                  reducing the attack surface for a personal-inventory app handling users' collection values. Designed
+                  the 30-day wear-log alert using a scheduled query against `last_worn_at` rather than a
+                  live cron job, keeping the feature serverless-compatible on Supabase's free tier.
+                </p>
+              </div>
+
+              <div class="project-actions">
+                <a href="https://sneakervaultapk.netlify.app" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-primary btn-sm">
+                  <span>Get Access</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1S2Fsfp1om2ZtO4H1Qr1hegLiZICF6yEi?usp=sharing" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <span>Live Demo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </a>
+                <a href="https://github.com/RoiSolarr/sneakervault" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-sm">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Gallery 9 photos (assets/project8) -->
+            <div class="project-gallery-col">
+              <div class="gallery-carousel" data-gallery="p1">
+                <div class="gallery-main-view">
+                  <img src="assets/project8/photo1.webp" alt="Sneakervault Preview" class="gallery-active-img"
+                    loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-thumbnails">
+                  <img src="assets/project8/thumbs/photo1.webp" data-full="assets/project8/photo1.webp" alt="Thumb 1" class="thumb active" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project8/thumbs/photo2.webp" data-full="assets/project8/photo2.webp" alt="Thumb 2" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project8/thumbs/photo3.webp" data-full="assets/project8/photo3.webp" alt="Thumb 3" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project8/thumbs/photo4.webp" data-full="assets/project8/photo4.webp" alt="Thumb 4" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project8/thumbs/photo5.webp" data-full="assets/project8/photo5.webp" alt="Thumb 5" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project8/thumbs/photo6.webp" data-full="assets/project8/photo6.webp" alt="Thumb 6" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project8/thumbs/photo7.webp" data-full="assets/project8/photo7.webp" alt="Thumb 7" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project8/thumbs/photo8.webp" data-full="assets/project8/photo8.webp" alt="Thumb 8" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project8/thumbs/photo9.webp" data-full="assets/project8/photo9.webp" alt="Thumb 9" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 2 -->
+          <article class="glass-capsule-sub project-card">
+            <div class="project-content-col">
+              <div class="project-tag-row">
+                <span class="project-pill-type">WEB APPLICATION</span>
+              </div>
+              <h3 class="project-title">Room Reservation System (Web App)</h3>
+              <p class="project-desc">
+                A room reservation workflow that makes shared spaces easier to discover, book, and manage with real-time
+                availability and role-based access.
+              </p>
+              <div class="project-meta-box">
+                <div class="meta-label">TOOLS & TECH</div>
+                <div class="meta-tags">
+                  <span class="meta-tag">HTML</span><span class="meta-tag">CSS</span><span
+                    class="meta-tag">JavaScript</span><span class="meta-tag">WebRTC</span><span
+                    class="meta-tag">Firebase</span><span class="meta-tag">Netlify</span>
+                </div>
+              </div>
+              <div class="project-meta-box">
+                <p class="meta-text">
+                  Developed the booking workflow, shaped the access model, and implemented the interface for staff and
+                  administrators to ensure smooth multi-location operations.
+                </p>
+              </div>
+              <div class="project-actions">
+                <a href="https://dict-room-reservation-2k2604.netlify.app" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-primary btn-sm">
+                  <span>Get Access</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1AVEmLdSVAzbCGxzkFTnuDLccl3Fpu-vW?usp=sharing" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <span>Live Demo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </a>
+                <a href="https://github.com/RoiSolarr/DICT-WEB-IOS" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-sm">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+            <!-- Gallery 9 photos (assets/project7) -->
+            <div class="project-gallery-col">
+              <div class="gallery-carousel" data-gallery="p2">
+                <div class="gallery-main-view">
+                  <img src="assets/project7/photo1.webp" alt="Room Reservation Web" class="gallery-active-img"
+                    loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-thumbnails">
+                  <img src="assets/project7/thumbs/photo1.webp" data-full="assets/project7/photo1.webp" alt="Thumb 1" class="thumb active" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project7/thumbs/photo2.webp" data-full="assets/project7/photo2.webp" alt="Thumb 2" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project7/thumbs/photo3.webp" data-full="assets/project7/photo3.webp" alt="Thumb 3" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project7/thumbs/photo4.webp" data-full="assets/project7/photo4.webp" alt="Thumb 4" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project7/thumbs/photo5.webp" data-full="assets/project7/photo5.webp" alt="Thumb 5" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project7/thumbs/photo6.webp" data-full="assets/project7/photo6.webp" alt="Thumb 6" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project7/thumbs/photo7.webp" data-full="assets/project7/photo7.webp" alt="Thumb 7" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project7/thumbs/photo8.webp" data-full="assets/project7/photo8.webp" alt="Thumb 8" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project7/thumbs/photo9.webp" data-full="assets/project7/photo9.webp" alt="Thumb 9" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 3 -->
+          <article class="glass-capsule-sub project-card">
+            <div class="project-content-col">
+              <div class="project-tag-row">
+                <span class="project-pill-type">MOBILE APPLICATION</span>
+              </div>
+              <h3 class="project-title">Room Reservation System (Mobile App)</h3>
+              <p class="project-desc">
+                A room reservation mobile client built with Flutter for on-the-go space discovery, real-time booking
+                updates, and multi-location management.
+              </p>
+              <div class="project-meta-box">
+                <div class="meta-label">TOOLS & TECH</div>
+                <div class="meta-tags">
+                  <span class="meta-tag">Flutter</span><span class="meta-tag">Dart</span><span
+                    class="meta-tag">WebRTC</span><span class="meta-tag">Firebase</span><span
+                    class="meta-tag">Netlify</span>
+                </div>
+              </div>
+              <div class="project-meta-box">
+                <p class="meta-text">
+                  Developed the booking workflow, shaped the access model, and implemented the mobile client for staff
+                  and administrators.
+                </p>
+              </div>
+              <div class="project-actions">
+                <a href="https://dict-room-reservation-2k2604.netlify.app" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-primary btn-sm">
+                  <span>Get Access</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1pPyfymTY9w218Jb0rz9hVEJG-GFqywl7?usp=sharing" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <span>Live Demo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </a>
+                <a href="https://github.com/RoiSolarr/dictapp" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-sm">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+            <!-- Gallery 9 photos (assets/project6) -->
+            <div class="project-gallery-col">
+              <div class="gallery-carousel" data-gallery="p3">
+                <div class="gallery-main-view">
+                  <img src="assets/project6/photo1.webp" alt="Room Reservation App" class="gallery-active-img"
+                    loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-thumbnails">
+                  <img src="assets/project6/thumbs/photo1.webp" data-full="assets/project6/photo1.webp" alt="Thumb 1" class="thumb active" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project6/thumbs/photo2.webp" data-full="assets/project6/photo2.webp" alt="Thumb 2" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project6/thumbs/photo3.webp" data-full="assets/project6/photo3.webp" alt="Thumb 3" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project6/thumbs/photo4.webp" data-full="assets/project6/photo4.webp" alt="Thumb 4" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project6/thumbs/photo5.webp" data-full="assets/project6/photo5.webp" alt="Thumb 5" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project6/thumbs/photo6.webp" data-full="assets/project6/photo6.webp" alt="Thumb 6" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project6/thumbs/photo7.webp" data-full="assets/project6/photo7.webp" alt="Thumb 7" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project6/thumbs/photo8.webp" data-full="assets/project6/photo8.webp" alt="Thumb 8" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project6/thumbs/photo9.webp" data-full="assets/project6/photo9.webp" alt="Thumb 9" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 4 -->
+          <article class="glass-capsule-sub project-card">
+            <div class="project-content-col">
+              <div class="project-tag-row">
+                <span class="project-pill-type">WEB-BASED ADMIN PORTAL</span>
+              </div>
+              <h3 class="project-title">Room Reservation System (Admin Portal)</h3>
+              <p class="project-desc">
+                Centralized administration portal with comprehensive branch oversight, user access privileges, and room
+                availability controls.
+              </p>
+              <div class="project-meta-box">
+                <div class="meta-label">TOOLS & TECH</div>
+                <div class="meta-tags">
+                  <span class="meta-tag">HTML</span><span class="meta-tag">CSS</span><span
+                    class="meta-tag">JavaScript</span><span class="meta-tag">WebRTC</span><span
+                    class="meta-tag">Firebase</span><span class="meta-tag">Netlify</span>
+                </div>
+              </div>
+              <div class="project-meta-box">
+                <p class="meta-text">
+                  Developed the booking workflow, shaped the access model, and implemented the interface for
+                  administrators.
+                </p>
+              </div>
+              <div class="project-actions">
+                <a href="https://dictadminweb-crisp-6325f5.netlify.app" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-primary btn-sm">
+                  <span>Get Access</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1reQ4NF1yc-LMMqzPCDeUhCLr43vZiCin?usp=sharing" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <span>Live Demo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </a>
+                <a href="https://github.com/RoiSolarr/roomweb" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-sm">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+            <!-- Gallery 10 photos (assets/project5) -->
+            <div class="project-gallery-col">
+              <div class="gallery-carousel" data-gallery="p4">
+                <div class="gallery-main-view">
+                  <img src="assets/project5/01_login (1).webp" alt="Admin Portal Preview" class="gallery-active-img"
+                    loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-thumbnails">
+                  <img src="assets/project5/thumbs/01_login (1).webp" data-full="assets/project5/01_login (1).webp" alt="Login" class="thumb active"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project5/thumbs/02_password_recovery.webp" data-full="assets/project5/02_password_recovery.webp" alt="Recovery" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project5/thumbs/03_create_account.webp" data-full="assets/project5/03_create_account.webp" alt="Create" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project5/thumbs/04_room_management.webp" data-full="assets/project5/04_room_management.webp" alt="Rooms" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project5/thumbs/05_manage_branches.webp" data-full="assets/project5/05_manage_branches.webp" alt="Branches" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project5/thumbs/06_manage_app.webp" data-full="assets/project5/06_manage_app.webp" alt="App" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project5/thumbs/07_user_management.webp" data-full="assets/project5/07_user_management.webp" alt="Users" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project5/thumbs/08_reservations.webp" data-full="assets/project5/08_reservations.webp" alt="Reservations" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project5/thumbs/09_history_management.webp" data-full="assets/project5/09_history_management.webp" alt="History" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project5/thumbs/10_messages.webp" data-full="assets/project5/10_messages.webp" alt="Messages" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 5 -->
+          <article class="glass-capsule-sub project-card">
+            <div class="project-content-col">
+              <div class="project-tag-row">
+                <span class="project-pill-type">MOBILE APPLICATION</span>
+              </div>
+              <h3 class="project-title">DELIVERY RIDER APP</h3>
+              <p class="project-desc">
+                A companion mobile app for delivery riders that connects to an existing admin dashboard and customer
+                app, enabling real-time GPS trip tracking, order management, and delivery history logging.
+              </p>
+              <div class="project-meta-box">
+                <div class="meta-label">TOOLS & TECH</div>
+                <div class="meta-tags">
+                  <span class="meta-tag">React Native</span><span class="meta-tag">Expo Go</span><span
+                    class="meta-tag">Firebase</span><span class="meta-tag">Netlify</span>
+                </div>
+              </div>
+              <div class="project-meta-box">
+                <p class="meta-text">
+                  Streamed GPS coordinates to Firebase at a throttled interval rather than on every location update,
+                  balancing live-tracking accuracy against battery drain and Firebase write costs — then built the
+                  customer-facing map to interpolate between updates so the movement still reads as smooth in real
+                  time.
+                </p>
+              </div>
+              <div class="project-actions">
+                <a href="https://vpmonlineriderapp-bright-naiad-5c3fbe.netlify.app" target="_blank"
+                  rel="noopener noreferrer" class="btn-capsule btn-primary btn-sm">
+                  <span>Get Access</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1ltJnh-QQ5vDVhfKS3R3RBq2FoIyvvIMa?usp=sharing" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <span>Live Demo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </a>
+                <a href="https://github.com/RoiSolarr/vpmonlineapplication" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-sm">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+            <!-- Gallery 7 photos (assets/project4) -->
+            <div class="project-gallery-col">
+              <div class="gallery-carousel" data-gallery="p5">
+                <div class="gallery-main-view">
+                  <img src="assets/project4/photo1.webp" alt="Delivery Rider App" class="gallery-active-img"
+                    loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-thumbnails">
+                  <img src="assets/project4/thumbs/photo1.webp" data-full="assets/project4/photo1.webp" alt="Thumb 1" class="thumb active" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project4/thumbs/photo2.webp" data-full="assets/project4/photo2.webp" alt="Thumb 2" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project4/thumbs/photo3.webp" data-full="assets/project4/photo3.webp" alt="Thumb 3" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project4/thumbs/photo4.webp" data-full="assets/project4/photo4.webp" alt="Thumb 4" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project4/thumbs/photo5.webp" data-full="assets/project4/photo5.webp" alt="Thumb 5" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project4/thumbs/photo6.webp" data-full="assets/project4/photo6.webp" alt="Thumb 6" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project4/thumbs/photo7.webp" data-full="assets/project4/photo7.webp" alt="Thumb 7" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 6 -->
+          <article class="glass-capsule-sub project-card">
+            <div class="project-content-col">
+              <div class="project-tag-row">
+                <span class="project-pill-type">WEB-BASED CUSTOMER APPLICATION</span>
+              </div>
+              <h3 class="project-title">VPM ONLINE - WEB APPLICATION</h3>
+              <p class="project-desc">
+                A responsive web counterpart to an existing mobile shopping app, letting customers browse products and
+                log in only when they add to cart, sharing the same Firebase backend.
+              </p>
+              <div class="project-meta-box">
+                <div class="meta-label">TOOLS & TECH</div>
+                <div class="meta-tags">
+                  <span class="meta-tag">React</span><span class="meta-tag">TypeScript</span><span
+                    class="meta-tag">Vite</span><span class="meta-tag">Tailwind CSS</span><span
+                    class="meta-tag">Firebase</span><span class="meta-tag">Netlify</span>
+                </div>
+              </div>
+              <div class="project-meta-box">
+                <p class="meta-text">
+                  Built the guest-browsing and auth-gating system, the responsive layout that adapts from phone to
+                  tablet to desktop, and the checkout, order tracking, and support-messaging pages, mirroring the mobile
+                  app's business logic and Firebase schema while swapping mobile-only APIs for web equivalents.
+                </p>
+              </div>
+              <div class="project-actions">
+                <a href="https://vpmonlinewebuser-deluxe-strudel.netlify.app" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-primary btn-sm">
+                  <span>Get Access</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <a href="https://drive.google.com/drive/folders/17ldDV9xHlmUTQu9JxS9XniQcvmRXB78w?usp=sharing" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <span>Live Demo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </a>
+                <a href="https://github.com/RoiSolarr/vpmonlinewebsiteapp" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-sm">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+            <!-- Gallery 13 photos (assets/project3) -->
+            <div class="project-gallery-col">
+              <div class="gallery-carousel" data-gallery="p6">
+                <div class="gallery-main-view">
+                  <img src="assets/project3/photo1.webp" alt="VPM Web App" class="gallery-active-img" loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-thumbnails">
+                  <img src="assets/project3/thumbs/photo1.webp" data-full="assets/project3/photo1.webp" alt="Thumb 1" class="thumb active" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo2.webp" data-full="assets/project3/photo2.webp" alt="Thumb 2" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo3.webp" data-full="assets/project3/photo3.webp" alt="Thumb 3" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo4.webp" data-full="assets/project3/photo4.webp" alt="Thumb 4" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo5.webp" data-full="assets/project3/photo5.webp" alt="Thumb 5" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo6.webp" data-full="assets/project3/photo6.webp" alt="Thumb 6" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo7.webp" data-full="assets/project3/photo7.webp" alt="Thumb 7" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo8.webp" data-full="assets/project3/photo8.webp" alt="Thumb 8" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo9.webp" data-full="assets/project3/photo9.webp" alt="Thumb 9" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo10.webp" data-full="assets/project3/photo10.webp" alt="Thumb 10" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo11.webp" data-full="assets/project3/photo11.webp" alt="Thumb 11" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo12.webp" data-full="assets/project3/photo12.webp" alt="Thumb 12" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project3/thumbs/photo13.webp" data-full="assets/project3/photo13.webp" alt="Thumb 13" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 7 -->
+          <article class="glass-capsule-sub project-card">
+            <div class="project-content-col">
+              <div class="project-tag-row">
+                <span class="project-pill-type">MOBILE APPLICATION</span>
+              </div>
+              <h3 class="project-title">VPM ONLINE - E-COMMERCE MOBILE APPLICATION</h3>
+              <p class="project-desc">
+                A full-stack e-commerce mobile app for browsing and ordering products, with account management, live
+                order tracking, support chat, and a custom navigation bar, backed by Firebase for shared data.
+              </p>
+              <div class="project-meta-box">
+                <div class="meta-label">TOOLS & TECH</div>
+                <div class="meta-tags">
+                  <span class="meta-tag">React Native</span><span class="meta-tag">Expo Go</span><span
+                    class="meta-tag">Firebase</span><span class="meta-tag">Netlify</span>
+                </div>
+              </div>
+              <div class="project-meta-box">
+                <p class="meta-text">
+                  Developed the sign-up flow with OTP verification and password strength validation, the product
+                  browsing and cart-to-checkout flow, and the order tracking and support-chat screens.
+                </p>
+              </div>
+              <div class="project-actions">
+                <a href="https://vpmonlineuserapp-starlit-smakager.netlify.app" target="_blank"
+                  rel="noopener noreferrer" class="btn-capsule btn-primary btn-sm">
+                  <span>Get Access</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1X2f8lhZSY9e_ubXDVr4TznrVpIRB4P4e?usp=sharing" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <span>Live Demo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </a>
+                <a href="https://github.com/RoiSolarr/vpmonlineuserapp" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-sm">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+            <!-- Gallery 13 photos (assets/project2) -->
+            <div class="project-gallery-col">
+              <div class="gallery-carousel" data-gallery="p7">
+                <div class="gallery-main-view">
+                  <img src="assets/project2/photo1.webp" alt="VPM E-Commerce Mobile" class="gallery-active-img"
+                    loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-thumbnails">
+                  <img src="assets/project2/thumbs/photo1.webp" data-full="assets/project2/photo1.webp" alt="Thumb 1" class="thumb active" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo2.webp" data-full="assets/project2/photo2.webp" alt="Thumb 2" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo3.webp" data-full="assets/project2/photo3.webp" alt="Thumb 3" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo4.webp" data-full="assets/project2/photo4.webp" alt="Thumb 4" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo5.webp" data-full="assets/project2/photo5.webp" alt="Thumb 5" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo6.webp" data-full="assets/project2/photo6.webp" alt="Thumb 6" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo7.webp" data-full="assets/project2/photo7.webp" alt="Thumb 7" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo8.webp" data-full="assets/project2/photo8.webp" alt="Thumb 8" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo9.webp" data-full="assets/project2/photo9.webp" alt="Thumb 9" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo10.webp" data-full="assets/project2/photo10.webp" alt="Thumb 10" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo11.webp" data-full="assets/project2/photo11.webp" alt="Thumb 11" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo12.webp" data-full="assets/project2/photo12.webp" alt="Thumb 12" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project2/thumbs/photo13.webp" data-full="assets/project2/photo13.webp" alt="Thumb 13" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- PROJECT 8 -->
+          <article class="glass-capsule-sub project-card">
+            <div class="project-content-col">
+              <div class="project-tag-row">
+                <span class="project-pill-type">WEB-BASED ADMIN PORTAL</span>
+              </div>
+              <h3 class="project-title">VPM ONLINE ADMIN CONSOLE</h3>
+              <p class="project-desc">
+                A full-featured admin dashboard for managing an e-commerce operation covering product and inventory
+                management, order processing and sales reporting, backed by a secured Express API with Firebase Admin.
+              </p>
+              <div class="project-meta-box">
+                <div class="meta-label">TOOLS & TECH</div>
+                <div class="meta-tags">
+                  <span class="meta-tag">React</span><span class="meta-tag">TypeScript</span><span
+                    class="meta-tag">Vite</span><span class="meta-tag">Tailwind CSS</span><span class="meta-tag">Node.js
+                    (Express)</span><span class="meta-tag">Firebase</span><span class="meta-tag">Netlify</span>
+                </div>
+              </div>
+              <div class="project-meta-box">
+                <p class="meta-text">
+                  Split the Firebase Admin SDK into a dedicated Express backend after realizing the original
+                  architecture exposed admin credentials to the browser bundle — moved all privileged writes
+                  (inventory adjustments, order status changes) behind authenticated API routes so the React app
+                  never touches service-account keys directly.
+                </p>
+              </div>
+              <div class="project-actions">
+                <a href="https://vpmonlinewebsitedeft-madelein.netlify.app" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-primary btn-sm">
+                  <span>Get Access</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <a href="https://drive.google.com/drive/folders/1SaxU4as3cVXpKJTbwzLM7Y_0a0Buvf_W?usp=sharing" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <span>Live Demo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </a>
+                <a href="https://github.com/RoiSolarr/vpmonlinewebsite" target="_blank" rel="noopener noreferrer"
+                  class="btn-capsule btn-secondary btn-sm">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-sm">
+                    <path
+                      d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+              </div>
+            </div>
+            <!-- Gallery 12 photos (assets/project1) -->
+            <div class="project-gallery-col">
+              <div class="gallery-carousel" data-gallery="p8">
+                <div class="gallery-main-view">
+                  <img src="assets/project1/01_login.webp" alt="VPM Admin Preview" class="gallery-active-img"
+                    loading="lazy" decoding="async">
+                </div>
+                <div class="gallery-thumbnails">
+                  <img src="assets/project1/thumbs/01_login.webp" data-full="assets/project1/01_login.webp" alt="Login" class="thumb active" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/02_dashboard.webp" data-full="assets/project1/02_dashboard.webp" alt="Dashboard" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/03_product_management.webp" data-full="assets/project1/03_product_management.webp" alt="Products" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/04_order_management.webp" data-full="assets/project1/04_order_management.webp" alt="Orders" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/05_order_status.webp" data-full="assets/project1/05_order_status.webp" alt="Status" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/06_order_history.webp" data-full="assets/project1/06_order_history.webp" alt="History" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/07_inventory_management.webp" data-full="assets/project1/07_inventory_management.webp" alt="Inventory" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/08_purchase_orders.webp" data-full="assets/project1/08_purchase_orders.webp" alt="PO" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/09_user_management.webp" data-full="assets/project1/09_user_management.webp" alt="Users" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/10_point_of_sale.webp" data-full="assets/project1/10_point_of_sale.webp" alt="POS" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/11_customer_chat.webp" data-full="assets/project1/11_customer_chat.webp" alt="Chat" class="thumb" onclick="switchThumb(this)" loading="lazy" decoding="async">
+                  <img src="assets/project1/thumbs/12_sales_report.webp" data-full="assets/project1/12_sales_report.webp" alt="Reports" class="thumb"
+                    onclick="switchThumb(this)" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 EXPERIENCE SECTION -->
+    <section id="experience" class="section-container">
+      <div class="glass-capsule exp-capsule">
+        <div class="section-header">
+          <span class="section-badge">06 EXPERIENCE</span>
+          <h2 class="section-title">LEARNING BY DOING THE WORK</h2>
+          <p class="section-subtitle">Every role has taught me to ask better questions, communicate earlier, and leave
+            the system easier to understand than I found it.</p>
+          <div class="title-divider"></div>
+        </div>
+
+        <div class="experience-timeline">
+          <div class="glass-capsule-sub exp-card">
+            <div class="exp-header-row">
+              <div>
+                <span class="exp-role-badge">IT INTERN</span>
+                <h3 class="exp-company">Department of Information and Communications Technology</h3>
+              </div>
+              <div class="exp-date-pill">JANUARY 2026 — APRIL 2026</div>
+            </div>
+            <p class="exp-description">
+              Developed and deployed a comprehensive Room Reservation System using Flutter and Firebase,
+              implemented real-time notifications and a user-friendly admin portal that enhanced user experience.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 CONTACT SECTION -->
+    <section id="contact" class="section-container">
+      <div class="glass-capsule contact-capsule">
+        <div class="section-header">
+          <span class="section-badge">07 CONTACT</span>
+          <h2 class="section-title">HAVE A PROBLEM WORTH SOLVING?</h2>
+          <p class="section-subtitle">Tell me what you're building, where it feels stuck, and what good could look like.
+            I'll bring questions, structure, and a practical next step.</p>
+          <div class="title-divider"></div>
+        </div>
+
+        <div class="contact-card-content">
+          <div class="contact-methods-grid">
+            <!-- Email -->
+            <div class="glass-capsule-sub contact-item">
+              <div class="contact-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+              </div>
+              <div class="contact-details">
+                <div class="contact-label">DIRECT LINE</div>
+                <a href="mailto:roivincentsolar@gmail.com" class="contact-val">roivincentsolar@gmail.com</a>
+              </div>
+              <button class="btn-capsule btn-copy" onclick="copyEmail('roivincentsolar@gmail.com', this)"
+                title="Copy Email">
+                <span>Copy</span>
+              </button>
+            </div>
+
+            <!-- GitHub -->
+            <a href="https://github.com/RoiSolarr" target="_blank" rel="noopener noreferrer"
+              class="glass-capsule-sub contact-item contact-link-item">
+              <div class="contact-icon-box">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                </svg>
+              </div>
+              <div class="contact-details">
+                <div class="contact-label">GITHUB</div>
+                <span class="contact-val">github.com/RoiSolarr</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ext">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/roi-vincent-solar/" target="_blank" rel="noopener noreferrer"
+              class="glass-capsule-sub contact-item contact-link-item">
+              <div class="contact-icon-box">
+                <svg viewBox="0 0 24 24" fill="#0a66c2">
+                  <path
+                    d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64a1.64 1.64 0 0 0-1.64 1.64c0 .91.73 1.64 1.64 1.64a1.64 1.64 0 0 0 1.64-1.64c0-.9-.73-1.64-1.64-1.64z" />
+                </svg>
+              </div>
+              <div class="contact-details">
+                <div class="contact-label">LINKEDIN</div>
+                <span class="contact-val">linkedin.com/in/roi-vincent-solar</span>
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ext">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer-wrapper">
+      <div class="glass-capsule footer-capsule">
+        <h2 class="footer-brand">ROI VINCENT SOLAR</h2>
+        <p class="footer-meta">Full-Stack Developer • Flutter • Firebase • Web</p>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- GALLERY LIGHTBOX (opens on photo click, scroll to browse, X to close) -->
+  <div class="lightbox-overlay" id="lightboxOverlay">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close preview">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="lightbox-content">
+      <img src="" alt="Project preview" class="lightbox-img" id="lightboxImg">
+    </div>
+    <div class="lightbox-counter" id="lightboxCounter"></div>
+  </div>
+
+  <script src="script.js?v=13"></script>
+</body>
+
+</html>
