@@ -1,771 +1,822 @@
 /* ==========================================================================
-   ROI VINCENT P. SOLAR — DUAL-THEME SMOOTH SCROLL & INTERACTION ENGINE
+   ROI VINCENT P. SOLAR — PORTFOLIO
+   Scroll choreography, theme, gallery and lightbox.
+   No image sequence, no canvas: everything here is DOM + transforms.
    ========================================================================== */
+(function () {
+  'use strict';
 
-const TOTAL_FRAMES = 240;
-const canvas = document.getElementById('canvas');
-// alpha: false = the background is always fully covered by a frame, so the
-// browser can treat the canvas as opaque and skip blending it every frame.
-const ctx = canvas.getContext('2d', { alpha: false });
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var supportsIO = typeof IntersectionObserver !== 'undefined';
 
-// Dark mode crop bounds (darkbg full 1280x720 bleed)
-const DARK_SRC_X = 0;
-const DARK_SRC_Y = 0;
-const DARK_SRC_W = 1280;
-const DARK_SRC_H = 720;
+  function $(sel, ctx) { return (ctx || document).querySelector(sel); }
+  function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
 
-// Light mode crop bounds (lightbg full 1280x720 bleed)
-const LIGHT_SRC_X = 0;
-const LIGHT_SRC_Y = 0;
-const LIGHT_SRC_W = 1280;
-const LIGHT_SRC_H = 720;
-
-// Separate memory caches for Dark (meteor night) and Light (beach sun) frames.
-// Each entry holds the frame's compressed file (a Blob, or an <img> fallback).
-const darkFrames = new Array(TOTAL_FRAMES);
-const lightFrames = new Array(TOTAL_FRAMES);
-
-// Decoded, ready-to-draw bitmaps for the frames around the current one.
-// Drawing a plain <img> makes the browser decode the JPEG on the main thread
-// at paint time (a stutter on every new frame); createImageBitmap(blob)
-// decodes ahead of time on a background thread instead.
-const BITMAP_RADIUS = 10;       // decode this many frames on each side
-const BITMAP_KEEP_RADIUS = 16;  // release bitmaps further away than this
-const darkBitmaps = new Array(TOTAL_FRAMES);
-const lightBitmaps = new Array(TOTAL_FRAMES);
-const pendingBitmaps = new Set();
-
-// Background easing time constant in ms. Time-based, so the background keeps
-// the same responsive feel at 30, 60 or 120fps instead of lagging when fps dips.
-const SCROLL_EASE_MS = 90;
-
-let currentTheme = 'dark';
-let currentFrame = 0;
-let targetFrame = 0;
-let lastRenderedFrame = -1;
-let lastRenderedTheme = '';
-let animationFrameId = 0;
-let lastTickTime = 0;
-
-// --- LOADING SCREEN (name + 0-100% while background frames preload) ---
-const loadingScreen = document.getElementById('loadingScreen');
-const loadingBarFill = document.getElementById('loadingBarFill');
-const loadingPercentage = document.getElementById('loadingPercentage');
-const heroSection = document.getElementById('hero');
-let loadingHidden = false;
-
-function updateLoadingProgress(loaded, total) {
-  if (!total) return;
-  const pct = Math.min(100, Math.round((loaded / total) * 100));
-  if (loadingBarFill) loadingBarFill.style.width = pct + '%';
-  if (loadingPercentage) loadingPercentage.textContent = pct + '%';
-}
-
-function hideLoadingScreen() {
-  if (loadingHidden || !loadingScreen) return;
-  loadingHidden = true;
-  updateLoadingProgress(1, 1);
-  loadingScreen.classList.add('loading-hidden');
-  // Play the hero's one-time fade-up entrance now, right as the overlay
-  // clears, so it's actually seen instead of finishing underneath it.
-  if (heroSection) heroSection.classList.add('hero-animate');
-  window.setTimeout(() => {
-    if (loadingScreen && loadingScreen.parentNode) {
-      loadingScreen.parentNode.removeChild(loadingScreen);
-    }
-  }, 700);
-}
-
-// Safety net: never let a slow/failed image request trap the user on the
-// loading screen forever.
-window.setTimeout(hideLoadingScreen, 12000);
-
-// Filename generators
-function getDarkFrameSrc(index) {
-  const padded = String(index + 1).padStart(3, '0');
-  return `darkbg/frame-${padded}.jpg`;
-}
-
-function getLightFrameSrc(index) {
-  const padded = String(index + 1).padStart(3, '0');
-  return `lightbg/frame-${padded}.jpg`;
-}
-
-// Size the canvas to the viewport. The frames are only 1280x720, so a canvas
-// larger than the viewport's CSS size can't show any extra detail; it only
-// costs more GPU work on every frame and under every glass (blur) panel.
-// That's why the pixel ratio is capped at 1 here.
-function resizeCanvas() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 1);
-  const w = Math.round(window.innerWidth * dpr);
-  const h = Math.round(window.innerHeight * dpr);
-
-  // 'resize' and visualViewport 'resize' often fire together for the same
-  // change; resizing the canvas wipes and reallocates it, so skip no-op calls.
-  if (canvas.width === w && canvas.height === h) return;
-
-  canvas.width = w;
-  canvas.height = h;
-
-  lastRenderedFrame = -1;
-  renderFrame(Math.round(currentFrame));
-}
-
-// Draw image covering the entire canvas without bars or distortion
-function drawImageCover(img, isLight) {
-  // Accepts an <img> (naturalWidth) or an ImageBitmap (width)
-  if (!img || !(img.naturalWidth || img.width) || !(img.naturalHeight || img.height)) return;
-
-  const cw = canvas.width;
-  const ch = canvas.height;
-  if (cw === 0 || ch === 0) return;
-
-  const srcX = isLight ? LIGHT_SRC_X : DARK_SRC_X;
-  const srcY = isLight ? LIGHT_SRC_Y : DARK_SRC_Y;
-  const srcW = isLight ? LIGHT_SRC_W : DARK_SRC_W;
-  const srcH = isLight ? LIGHT_SRC_H : DARK_SRC_H;
-
-  const scale = Math.max(cw / srcW, ch / srcH);
-  const dw = srcW * scale;
-  const dh = srcH * scale;
-  const dx = (cw - dw) / 2;
-  const dy = (ch - dh) / 2;
-
-  ctx.clearRect(0, 0, cw, ch);
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(img, srcX, srcY, srcW, srcH, dx, dy, dw, dh);
-}
-
-// Find the nearest decoded frame. The exact one is normally ready because the
-// frames around the current one are decoded ahead; a neighbour stands in for
-// the moment it isn't, so the background never goes blank.
-function getNearestLoadedImage(index, isLight) {
-  const bitmaps = isLight ? lightBitmaps : darkBitmaps;
-  const target = Math.max(0, Math.min(TOTAL_FRAMES - 1, index));
-
-  if (bitmaps[target]) {
-    return bitmaps[target];
-  }
-
-  for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
-    const prev = target - offset;
-    if (prev >= 0 && bitmaps[prev]) {
-      return bitmaps[prev];
-    }
-    const next = target + offset;
-    if (next < TOTAL_FRAMES && bitmaps[next]) {
-      return bitmaps[next];
-    }
-  }
-  return null;
-}
-
-// Render the specified frame index for the active theme. Returns true only
-// if a frame was actually drawn, so callers know not to mark it as rendered.
-function renderFrame(index) {
-  const isLight = currentTheme === 'light';
-  const img = getNearestLoadedImage(index, isLight);
-  updateBitmapWindow(index, isLight);
-  if (img) {
-    drawImageCover(img, isLight);
-    lastRenderedTheme = currentTheme;
-    return true;
-  }
-  return false;
-}
-
-// Fetch one frame's compressed file. Falls back to an <img> where fetch()
-// is unavailable (e.g. index.html opened straight from disk).
-// lowPriority lets the page's own images (project screenshots) download first.
-function loadFrame(src, lowPriority) {
-  return fetch(src, lowPriority ? { priority: 'low' } : undefined)
-    .then((res) => {
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.blob();
-    })
-    .catch(() => new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
-    }));
-}
-
-// Decode a loaded frame into something drawImage can use without decoding
-// again. Falls back to an <img> on browsers without createImageBitmap.
-function decodeFrame(frame) {
-  const viaImg = () => {
-    if (frame instanceof HTMLImageElement) return Promise.resolve(frame);
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      const url = URL.createObjectURL(frame);
-      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
-      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('frame decode failed')); };
-      img.src = url;
-    });
-  };
-  if (typeof createImageBitmap !== 'function') return viaImg();
-  return createImageBitmap(frame).catch(viaImg);
-}
-
-function releaseBitmap(bitmap) {
-  if (bitmap && typeof bitmap.close === 'function') bitmap.close();
-}
-
-function releaseBitmaps(bitmaps) {
-  for (let i = 0; i < TOTAL_FRAMES; i++) {
-    if (bitmaps[i]) {
-      releaseBitmap(bitmaps[i]);
-      bitmaps[i] = undefined;
-    }
-  }
-}
-
-// Decode the frames around `center` ahead of time and free the far-away ones,
-// so only a small window of decoded frames is held in memory.
-function updateBitmapWindow(center, isLight) {
-  const frames = isLight ? lightFrames : darkFrames;
-  const bitmaps = isLight ? lightBitmaps : darkBitmaps;
-  const theme = isLight ? 'light' : 'dark';
-
-  for (let i = 0; i < TOTAL_FRAMES; i++) {
-    if (bitmaps[i] && Math.abs(i - center) > BITMAP_KEEP_RADIUS) {
-      releaseBitmap(bitmaps[i]);
-      bitmaps[i] = undefined;
-    }
-  }
-
-  const from = Math.max(0, center - BITMAP_RADIUS);
-  const to = Math.min(TOTAL_FRAMES - 1, center + BITMAP_RADIUS);
-  for (let i = from; i <= to; i++) {
-    const key = theme + i;
-    if (bitmaps[i] || pendingBitmaps.has(key) || !frames[i]) continue;
-
-    pendingBitmaps.add(key);
-    decodeFrame(frames[i]).then((bitmap) => {
-      pendingBitmaps.delete(key);
-      // Drop it if the theme changed or the user scrolled far away meanwhile
-      if (currentTheme !== theme || Math.abs(i - Math.round(currentFrame)) > BITMAP_KEEP_RADIUS) {
-        releaseBitmap(bitmap);
-        return;
-      }
-      bitmaps[i] = bitmap;
-
-      // Draw it now if it's the frame that belongs on screen (a neighbour may
-      // have stood in for it, or nothing has been drawn for this theme yet)
-      const shown = Math.round(currentFrame);
-      if (i === shown || lastRenderedTheme !== theme) {
-        if (renderFrame(shown)) {
-          lastRenderedFrame = shown;
-        }
-      }
-    }).catch(() => {
-      pendingBitmaps.delete(key);
-    });
-  }
-
-  // Nothing of this theme drawn yet and its frames near `center` are still
-  // downloading (theme switched early on a slow connection): show the nearest
-  // frame that has arrived as a one-off stand-in, so the switch is immediate
-  const standInKey = theme + '-standin';
-  if (lastRenderedTheme !== theme && !pendingBitmaps.has(standInKey) && !bitmaps.some(Boolean)) {
-    let nearest = -1;
-    for (let offset = 0; offset < TOTAL_FRAMES && nearest < 0; offset++) {
-      if (frames[center - offset]) nearest = center - offset;
-      else if (frames[center + offset]) nearest = center + offset;
-    }
-    if (nearest >= 0 && (nearest < from || nearest > to)) {
-      pendingBitmaps.add(standInKey);
-      decodeFrame(frames[nearest]).then((bitmap) => {
-        pendingBitmaps.delete(standInKey);
-        if (currentTheme === theme && lastRenderedTheme !== theme) {
-          drawImageCover(bitmap, isLight);
-          lastRenderedTheme = theme;
-        }
-        releaseBitmap(bitmap);
-      }).catch(() => {
-        pendingBitmaps.delete(standInKey);
-      });
-    }
-  }
-}
-
-// Preload frames for both Dark Mode (meteor night) and Light Mode (beach sun)
-function preloadFrames() {
-  const isLight = currentTheme === 'light';
-
-  // 1. Instantly load initial frame of both themes
-  loadFrame(getDarkFrameSrc(0)).then((frame) => {
-    darkFrames[0] = frame;
-    if (currentTheme === 'dark') {
-      updateBitmapWindow(Math.round(currentFrame), false);
-    }
-  }).catch(() => {});
-
-  loadFrame(getLightFrameSrc(0)).then((frame) => {
-    lightFrames[0] = frame;
-    if (currentTheme === 'light') {
-      updateBitmapWindow(Math.round(currentFrame), true);
-    }
-  }).catch(() => {});
-
-  // 2. Load active theme frames first for immediate scrolling smoothness.
-  // maxConcurrent (optional) limits how many frames download at once, so a
-  // background preload doesn't block the page's images from loading.
-  function preloadTheme(theme, callback, onProgress, maxConcurrent) {
-    let loaded = 0;
-    const isL = theme === 'light';
-    const cache = isL ? lightFrames : darkFrames;
-    const srcFn = isL ? getLightFrameSrc : getDarkFrameSrc;
-    const lowPriority = !!maxConcurrent;
-
-    const markLoaded = () => {
-      loaded++;
-      if (onProgress) onProgress(loaded, TOTAL_FRAMES - 1);
-      if (loaded === TOTAL_FRAMES - 1 && callback) {
-        callback();
-      }
-    };
-
-    const loadOne = (i) => loadFrame(srcFn(i), lowPriority).then((frame) => {
-      cache[i] = frame;
-      // Decode it straight away if it's needed on screen now (e.g. the theme
-      // was switched before this theme finished loading)
-      if (currentTheme === theme && Math.abs(i - Math.round(currentFrame)) <= BITMAP_RADIUS) {
-        updateBitmapWindow(Math.round(currentFrame), isL);
-      }
-    }, () => {}).then(markLoaded);
-
-    if (!maxConcurrent) {
-      for (let i = 1; i < TOTAL_FRAMES; i++) loadOne(i);
-      return;
-    }
-
-    // Throttled: keep only a few requests in flight, but go full speed as soon
-    // as the visitor actually switches to this theme
-    let next = 1;
-    let inFlight = 0;
-    const pump = () => {
-      const limit = currentTheme === theme ? 12 : maxConcurrent;
-      while (next < TOTAL_FRAMES && inFlight < limit) {
-        const i = next++;
-        inFlight++;
-        loadOne(i).then(() => {
-          inFlight--;
-          pump();
+  // A one-shot gate. Everything that should only start once the loading sheet
+  // has lifted registers here; without a loading screen it fires immediately.
+  // Without this the hero reveal would play behind the sheet and be missed.
+  var pageReady = (function () {
+    var queue = [];
+    var fired = false;
+    return {
+      then: function (fn) { fired ? fn() : queue.push(fn); },
+      fire: function () {
+        if (fired) return;
+        fired = true;
+        queue.splice(0).forEach(function (fn) {
+          try { fn(); } catch (err) { /* one bad step must not block the rest */ }
         });
       }
     };
-    pump();
+  })();
+
+  /* ------------------------------------------------------------------
+     1. THEME
+     ------------------------------------------------------------------ */
+  var THEME_KEY = 'rs_theme';
+  var root = document.documentElement;
+  var themeBtn = $('#themeToggleBtn');
+  var profileImg = $('#profileImg');
+  var currentTheme = 'light';
+
+  function readStoredTheme() {
+    try { return localStorage.getItem(THEME_KEY); } catch (err) { return null; }
   }
 
-  // Preload primary theme, then preload alternate theme in the background
-  const primaryTheme = isLight ? 'light' : 'dark';
-  const secondaryTheme = isLight ? 'dark' : 'light';
-
-  preloadTheme(primaryTheme, () => {
-    hideLoadingScreen();
-    updateBitmapWindow(Math.round(currentFrame), currentTheme === 'light');
-    preloadTheme(secondaryTheme, null, null, 3);
-  }, updateLoadingProgress);
-}
-
-// Calculate target frame from page scroll position
-function updateScrollProgress() {
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-  const scrollHeight = Math.max(
-    document.documentElement.scrollHeight,
-    document.body.scrollHeight,
-    document.documentElement.offsetHeight,
-    document.body.offsetHeight
-  );
-  const clientHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-  const maxScroll = scrollHeight - clientHeight;
-
-  const progress = maxScroll > 0 ? Math.min(1, Math.max(0, scrollTop / maxScroll)) : 0;
-  targetFrame = progress * (TOTAL_FRAMES - 1);
-}
-
-function animateScroll(now) {
-  updateScrollProgress();
-
-  // Frame-rate independent easing (dt capped so a stalled tab doesn't jump)
-  const dt = lastTickTime ? Math.min(100, now - lastTickTime) : 16.7;
-  lastTickTime = now;
-
-  const diff = targetFrame - currentFrame;
-  if (Math.abs(diff) > 0.01) {
-    currentFrame += diff * (1 - Math.exp(-dt / SCROLL_EASE_MS));
-  } else {
-    currentFrame = targetFrame;
+  function storeTheme(theme) {
+    try { localStorage.setItem(THEME_KEY, theme); } catch (err) { /* private mode */ }
   }
 
-  const rounded = Math.round(currentFrame);
-  if (rounded !== lastRenderedFrame || currentTheme !== lastRenderedTheme) {
-    if (renderFrame(rounded)) {
-      lastRenderedFrame = rounded;
+  function setTheme(theme, animate) {
+    currentTheme = theme === 'dark' ? 'dark' : 'light';
+    root.setAttribute('data-theme', currentTheme);
+    storeTheme(currentTheme);
+
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', currentTheme === 'dark' ? '#14110f' : '#edebe5');
+
+    // profile1.webp reads better on paper, profile2.webp on ink.
+    if (profileImg) {
+      var next = currentTheme === 'dark'
+        ? 'assets/pictures/profile2.webp'
+        : 'assets/pictures/profile1.webp';
+      if (profileImg.getAttribute('src') === next) return;
+      if (!animate || reduceMotion) {
+        profileImg.src = next;
+        return;
+      }
+      profileImg.style.opacity = '0';
+      window.setTimeout(function () {
+        profileImg.src = next;
+        profileImg.style.opacity = '1';
+      }, 260);
     }
   }
 
-  if (Math.abs(targetFrame - currentFrame) > 0.001) {
-    animationFrameId = requestAnimationFrame(animateScroll);
-  } else {
-    animationFrameId = 0;
-    lastTickTime = 0;
-  }
-}
+  (function initTheme() {
+    var saved = readStoredTheme();
+    if (saved === 'light' || saved === 'dark') {
+      setTheme(saved, false);
+    } else {
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(prefersDark ? 'dark' : 'light', false);
+    }
+  })();
 
-function handleScroll() {
-  updateScrollProgress();
-
-  if (!animationFrameId) {
-    animationFrameId = requestAnimationFrame(animateScroll);
-  }
-}
-
-// --- THEME SWITCHING (DARK = METEORS, LIGHT = SUNSET BEACH) ---
-const themeToggleBtn = document.getElementById('themeToggleBtn');
-const profileImg = document.getElementById('profileImg');
-
-function setTheme(theme) {
-  currentTheme = theme;
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('rs_theme', theme);
-
-  // Switch profile picture: profile1.webp (light mode), profile2.webp (dark mode)
-  // Swap only after the fade-out finishes (matches .profile-photo's 0.5s opacity transition)
-  // so the old photo is fully invisible before the new one fades in — no mid-fade jump.
-  if (profileImg) {
-    profileImg.style.opacity = '0';
-    setTimeout(() => {
-      profileImg.src = theme === 'light' ? 'assets/pictures/profile1.webp' : 'assets/pictures/profile2.webp';
-      profileImg.style.opacity = '1';
-    }, 500);
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark', true);
+    });
   }
 
-  // Free the other theme's decoded frames, then force background canvas to
-  // immediately redraw active theme at current frame
-  releaseBitmaps(theme === 'light' ? darkBitmaps : lightBitmaps);
-  lastRenderedFrame = -1;
-  if (!renderFrame(Math.round(currentFrame))) {
-    animationFrameId = requestAnimationFrame(animateScroll);
+  /* ------------------------------------------------------------------
+     2. HEADER CLOCK (Batangas / Asia-Manila)
+     ------------------------------------------------------------------ */
+  var clock = $('#headClock');
+  if (clock) {
+    var tick = function () {
+      var t;
+      try {
+        t = new Date().toLocaleTimeString('en-GB', {
+          timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit'
+        });
+      } catch (err) {
+        t = '';
+      }
+      clock.textContent = t ? 'BATANGAS ' + t : 'BATANGAS UTC+8';
+    };
+    tick();
+    window.setInterval(tick, 30000);
   }
-}
 
-function initTheme() {
-  const savedTheme = localStorage.getItem('rs_theme') || 'dark';
-  setTheme(savedTheme);
-}
+  /* ------------------------------------------------------------------
+     3. MOBILE NAV
+     ------------------------------------------------------------------ */
+  var menuBtn = $('#mobileMenuBtn');
+  var nav = $('#navLinks');
 
-if (themeToggleBtn) {
-  themeToggleBtn.addEventListener('click', () => {
-    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    setTheme(nextTheme);
+  function closeMenu() {
+    if (!nav || !menuBtn) return;
+    nav.classList.remove('is-open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  if (menuBtn && nav) {
+    menuBtn.addEventListener('click', function () {
+      var open = nav.classList.toggle('is-open');
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    $$('a', nav).forEach(function (a) { a.addEventListener('click', closeMenu); });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 1080) closeMenu();
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     4. REVEALS — heading masks and element fades
+     ------------------------------------------------------------------ */
+  // Stagger each line of a masked heading.
+  $$('.mask').forEach(function (m) {
+    $$('.line i', m).forEach(function (line, i) {
+      line.style.setProperty('--d', (i * 0.07) + 's');
+    });
   });
-}
 
-// --- PROJECT GALLERY THUMBNAIL SWITCHER ---
-// Thumbnails load a small copy (assets/projectX/thumbs/...). The full-size
-// screenshot is in data-full and is only loaded when it's actually shown.
-function getFullSrc(thumb) {
-  const full = thumb.getAttribute('data-full');
-  return full ? new URL(full, document.baseURI).href : thumb.src;
-}
-
-// Safety net: if a small thumbnail can't load (for example the thumbs folder
-// wasn't uploaded), show the full-size image instead of a broken image icon.
-// This keeps the page looking right, but full-size thumbnails are what make
-// cards go blank while scrolling, so it also warns in the DevTools console.
-function useFullImageForThumb(img) {
-  const full = img.getAttribute('data-full');
-  if (!full || img.dataset.thumbFallback) return;
-  img.dataset.thumbFallback = '1';
-  console.warn('Thumbnail missing, using the full image instead (upload the thumbs folder): ' + img.getAttribute('src'));
-  img.src = full;
-}
-
-// Image errors don't bubble, so listen in the capture phase
-document.addEventListener('error', (e) => {
-  const img = e.target;
-  if (img && img.classList && img.classList.contains('thumb')) {
-    useFullImageForThumb(img);
-  }
-}, true);
-
-// Catch any thumbnail that already failed before this script ran
-document.querySelectorAll('.thumb[data-full]').forEach((img) => {
-  if (img.complete && img.naturalWidth === 0) useFullImageForThumb(img);
-});
-
-window.switchThumb = function(thumb) {
-  const carousel = thumb.closest('.gallery-carousel');
-  if (!carousel) return;
-
-  const mainImg = carousel.querySelector('.gallery-active-img');
-  if (mainImg) {
-    const fullSrc = getFullSrc(thumb);
-    mainImg.dataset.pendingSrc = fullSrc;
-    mainImg.style.opacity = '0.3';
-
-    // Load + decode the full image first so it swaps in without a blank flash
-    const preload = new Image();
-    preload.src = fullSrc;
-    const ready = preload.decode ? preload.decode().catch(() => {}) : Promise.resolve();
-    const minDelay = new Promise((resolve) => setTimeout(resolve, 120));
-
-    Promise.all([ready, minDelay]).then(() => {
-      // Ignore if another thumbnail was clicked in the meantime
-      if (mainImg.dataset.pendingSrc !== fullSrc) return;
-      mainImg.src = fullSrc;
-      mainImg.style.opacity = '1';
+  // Give a list of elements the reveal treatment with a running delay.
+  function cascade(items, opts) {
+    opts = opts || {};
+    var step = opts.step || 0.05;
+    var max = opts.max || 0.4;
+    var start = opts.start || 0;
+    var extra = opts.extra;
+    items.forEach(function (el, i) {
+      el.classList.add('reveal');
+      if (extra) el.classList.add(extra);
+      el.style.setProperty('--d', (start + Math.min(i * step, max)).toFixed(3) + 's');
     });
   }
 
-  carousel.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-  thumb.classList.add('active');
-};
+  // Stagger siblings inside a group so rows cascade instead of popping together.
+  [
+    '.principles', '.counters', '.contact-grid', '.register', '.entries'
+  ].forEach(function (sel) {
+    $$(sel).forEach(function (group) {
+      $$(':scope > .reveal', group).forEach(function (el, i) {
+        el.style.setProperty('--d', Math.min(i * 0.055, 0.42) + 's');
+      });
+    });
+  });
 
-// --- COPY EMAIL TO CLIPBOARD ---
-window.copyEmail = function(text, btn) {
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => {
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<span>Copied! ✓</span>';
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-      }, 2000);
+  // --- Break the big blocks into parts -------------------------------------
+  // A project case is ~730px tall and a stack group can pass 1200px. Fading
+  // either as a single lump means the motion is over long before you have
+  // scrolled far enough to read it, which reads as no animation at all.
+  // Each one is replaced below by a short cascade of its own pieces.
+
+  $$('.stack-group').forEach(function (g) {
+    g.classList.remove('reveal');
+    var head = $('.stack-group__head', g);
+    if (head) cascade([head]);
+    cascade($$('.tool', g), { step: 0.035, max: 0.5, start: 0.05, extra: 'reveal--sm' });
+  });
+
+  $$('.case').forEach(function (c) {
+    c.classList.remove('reveal');
+
+    var panel = $('.case-panel__inner', c);
+    if (panel) {
+      cascade($$(':scope > .case-no, :scope > .case-kind, :scope > .case-title,' +
+        ' :scope > .case-desc, :scope > .case-stack, :scope > .case-note,' +
+        ' :scope > .case-actions', panel), { step: 0.055, max: 0.35, extra: 'reveal--left' });
+    }
+
+    var media = $('.case-media', c);
+    if (media) {
+      media.classList.add('reveal', 'reveal--wipe');
+      media.style.setProperty('--d', '0.1s');
+    }
+
+    cascade($$('.case-stack__list li', c), { step: 0.028, max: 0.32, start: 0.18, extra: 'reveal--sm' });
+    cascade($$('.thumb', c), { step: 0.026, max: 0.3, start: 0.3, extra: 'reveal--sm' });
+  });
+
+  $$('.entry').forEach(function (e) {
+    e.classList.remove('reveal');
+    cascade([$('.entry__year', e), $('.entry__body', e), $('.entry__side', e)]
+      .filter(Boolean), { step: 0.09, max: 0.3 });
+    cascade($$('.side-list li', e), { step: 0.04, max: 0.28, start: 0.2, extra: 'reveal--sm' });
+  });
+
+  $$('.cblock').forEach(function (b) {
+    cascade($$('.cblock__links a', b), { step: 0.07, max: 0.3, start: 0.1, extra: 'reveal--sm' });
+  });
+
+  // Thumbnails are excluded here and handled as whole strips below: a thumb
+  // parked off to the right of a horizontally scrolling strip never intersects
+  // the viewport, so observing it individually would leave it invisible for
+  // good the moment the visitor scrolls that strip sideways.
+  var animated = $$('.mask, .reveal, .draw').filter(function (el) {
+    return !el.closest('.gallery__thumbs');
+  });
+
+  if (reduceMotion || !supportsIO) {
+    animated.forEach(function (el) { el.classList.add('is-in'); });
+  } else {
+    var revealIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        revealIO.unobserve(entry.target);
+        // While a media panel is still wiped shut its clip-path hides the
+        // thumbnail strip inside it, so that strip can never report an
+        // intersection of its own. Hand it the reveal directly.
+        $$('.gallery__thumbs', entry.target).forEach(revealStrip);
+      });
+      // threshold 0 with a negative bottom margin means an element starts
+      // moving the moment its top crosses 88% of the viewport, so the motion
+      // plays while it is entering rather than finishing before you look.
+    }, { threshold: 0, rootMargin: '0px 0px -12% 0px' });
+
+    // Held back until the loading sheet lifts, so the first screen animates
+    // where the visitor can actually see it.
+    pageReady.then(function () {
+      animated.forEach(function (el) { revealIO.observe(el); });
+
+      // Anything already on screen should not wait for a scroll, but it still
+      // gets to play rather than being snapped into place.
+      window.requestAnimationFrame(function () {
+        animated.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight * 0.88) {
+            el.classList.add('is-in');
+            revealIO.unobserve(el);
+            $$('.gallery__thumbs', el).forEach(revealStrip);
+          }
+        });
+      });
     });
   }
-};
 
-// --- GALLERY LIGHTBOX (click photo to open, scroll to browse, X to close) ---
-const lightboxOverlay = document.getElementById('lightboxOverlay');
-const lightboxImg = document.getElementById('lightboxImg');
-const lightboxClose = document.getElementById('lightboxClose');
-const lightboxCounter = document.getElementById('lightboxCounter');
-
-let lightboxImages = [];
-let lightboxIndex = 0;
-let lightboxScrollLock = false;
-
-function renderLightbox() {
-  if (!lightboxImages.length) return;
-  lightboxImg.src = lightboxImages[lightboxIndex];
-  lightboxCounter.textContent = `${lightboxIndex + 1} / ${lightboxImages.length}`;
-}
-
-function openLightbox(carousel, startSrc) {
-  const thumbs = carousel.querySelectorAll('.thumb');
-  lightboxImages = Array.from(thumbs).map(getFullSrc);
-
-  if (lightboxImages.length === 0) {
-    const mainImg = carousel.querySelector('.gallery-active-img');
-    lightboxImages = mainImg ? [mainImg.src] : [];
+  // Reveal each thumbnail strip as a whole, including the thumbs currently
+  // scrolled out of sight to the right.
+  function revealStrip(strip) {
+    $$('.reveal', strip).forEach(function (el) { el.classList.add('is-in'); });
   }
 
-  const startIndex = lightboxImages.indexOf(startSrc);
-  lightboxIndex = startIndex >= 0 ? startIndex : 0;
+  var strips = $$('.gallery__thumbs');
 
-  renderLightbox();
-  lightboxOverlay.classList.add('active');
-  document.body.classList.add('lightbox-open');
-}
+  if (reduceMotion || !supportsIO) {
+    strips.forEach(revealStrip);
+  } else {
+    var stripIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        revealStrip(entry.target);
+        stripIO.unobserve(entry.target);
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
 
-function closeLightbox() {
-  lightboxOverlay.classList.remove('active');
-  document.body.classList.remove('lightbox-open');
-}
+    strips.forEach(function (s) { stripIO.observe(s); });
+  }
 
-function lightboxNext() {
-  lightboxIndex = (lightboxIndex + 1) % lightboxImages.length;
-  renderLightbox();
-}
+  /* ------------------------------------------------------------------
+     5. COUNTERS
+     ------------------------------------------------------------------ */
+  function runCounter(el) {
+    var target = parseInt(el.getAttribute('data-count-to'), 10);
+    if (isNaN(target)) return;
+    if (reduceMotion) { el.textContent = String(target); return; }
 
-function lightboxPrev() {
-  lightboxIndex = (lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
-  renderLightbox();
-}
+    var from = target > 1000 ? Math.max(target - 26, 0) : 0;
+    var start = null;
+    var dur = 900;
 
-document.querySelectorAll('.gallery-main-view').forEach((view) => {
-  view.addEventListener('click', () => {
-    const carousel = view.closest('.gallery-carousel');
-    const mainImg = view.querySelector('.gallery-active-img');
-    if (carousel && mainImg) {
-      openLightbox(carousel, mainImg.src);
+    function step(ts) {
+      if (start === null) start = ts;
+      var p = clamp((ts - start) / dur, 0, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = String(Math.round(from + (target - from) * eased));
+      if (p < 1) window.requestAnimationFrame(step);
+    }
+    window.requestAnimationFrame(step);
+  }
+
+  var counters = $$('.count');
+  if (counters.length) {
+    if (reduceMotion || !supportsIO) {
+      counters.forEach(runCounter);
+    } else {
+      var countIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          runCounter(entry.target);
+          countIO.unobserve(entry.target);
+        });
+      }, { threshold: 0.5 });
+      pageReady.then(function () {
+        counters.forEach(function (el) { countIO.observe(el); });
+      });
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     6. ACTIVE SECTION IN THE NAV
+     ------------------------------------------------------------------ */
+  var navLinks = $$('.nav-link');
+  var sections = navLinks
+    .map(function (l) { return document.getElementById(l.getAttribute('data-nav')); })
+    .filter(Boolean);
+
+  function setActive(id) {
+    navLinks.forEach(function (l) {
+      l.classList.toggle('is-active', l.getAttribute('data-nav') === id);
+    });
+  }
+
+  if (sections.length && supportsIO) {
+    var visible = {};
+    var sectionIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        visible[entry.target.id] = entry.isIntersecting ? entry.intersectionRatio : 0;
+      });
+      var best = null, bestRatio = 0;
+      Object.keys(visible).forEach(function (id) {
+        if (visible[id] > bestRatio) { bestRatio = visible[id]; best = id; }
+      });
+      if (best) setActive(best);
+    }, { threshold: [0, 0.15, 0.4, 0.75], rootMargin: '-20% 0px -45% 0px' });
+
+    sections.forEach(function (s) { sectionIO.observe(s); });
+  }
+
+  /* ------------------------------------------------------------------
+     7. SCROLL-LINKED: rail, marquee, parallax
+        One rAF loop, one passive scroll listener.
+     ------------------------------------------------------------------ */
+  var railFill = $('#railFill');
+  var marqueeTrack = $('#marqueeTrack');
+  var portrait = $('.portrait');
+  var wordmark = $('.wordmark');
+
+  var lastY = window.pageYOffset || 0;
+  var velocity = 0;
+  var marqueeX = 0;
+  var marqueeWidth = 0;
+  var ticking = false;
+  var lastFrame = 0;
+
+  function measureMarquee() {
+    if (!marqueeTrack) return;
+    var run = marqueeTrack.firstElementChild;
+    marqueeWidth = run ? run.getBoundingClientRect().width : 0;
+  }
+
+  function onScroll() {
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    velocity = y - lastY;
+    lastY = y;
+
+    if (railFill) {
+      var docH = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight
+      ) - window.innerHeight;
+      var p = docH > 0 ? clamp(y / docH, 0, 1) : 0;
+      railFill.style.width = (p * 100) + '%';
+    }
+
+    if (!reduceMotion) {
+      if (portrait) {
+        var pr = portrait.getBoundingClientRect();
+        if (pr.bottom > -200 && pr.top < window.innerHeight + 200) {
+          var offset = clamp((window.innerHeight - pr.top) * 0.045, -40, 40);
+          portrait.style.transform = 'translate3d(0,' + offset.toFixed(2) + 'px,0)';
+        }
+      }
+      if (wordmark) {
+        var wr = wordmark.getBoundingClientRect();
+        if (wr.top < window.innerHeight + 200 && wr.bottom > -200) {
+          var wo = clamp((window.innerHeight - wr.top) * 0.05, -60, 60);
+          wordmark.style.transform = 'translate3d(0,' + (-wo).toFixed(2) + 'px,0)';
+        }
+      }
+    }
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(onScroll);
+  }, { passive: true });
+
+  function loop(ts) {
+    var dt = lastFrame ? Math.min((ts - lastFrame) / 16.67, 3) : 1;
+    lastFrame = ts;
+
+    if (marqueeTrack && marqueeWidth > 0) {
+      // Base drift, plus a nudge from how fast (and which way) the page moved.
+      var speed = 0.5 + clamp(Math.abs(velocity) * 0.05, 0, 2.2);
+      var dir = velocity < -1 ? 1 : -1;
+      marqueeX += speed * dir * dt;
+      if (marqueeX <= -marqueeWidth) marqueeX += marqueeWidth;
+      if (marqueeX > 0) marqueeX -= marqueeWidth;
+      marqueeTrack.style.transform = 'translate3d(' + marqueeX.toFixed(2) + 'px,0,0)';
+    }
+
+    velocity *= 0.9;
+    window.requestAnimationFrame(loop);
+  }
+
+  measureMarquee();
+  window.addEventListener('resize', measureMarquee);
+  window.addEventListener('load', measureMarquee);
+  onScroll();
+  if (!reduceMotion) window.requestAnimationFrame(loop);
+
+  /* ------------------------------------------------------------------
+     8. PROJECT GALLERIES
+        Thumbnails hold a small webp; the full screenshot is in data-full
+        and is only fetched when it is actually shown.
+     ------------------------------------------------------------------ */
+  function fullSrc(thumb) {
+    var full = thumb.getAttribute('data-full');
+    if (full) return full;
+    var img = thumb.querySelector('img');
+    return img ? img.getAttribute('src') : '';
+  }
+
+  function updateCount(gallery, index, total) {
+    var el = $('.gallery__count', gallery);
+    if (!el) return;
+    var pad = function (n) { return n < 10 ? '0' + n : String(n); };
+    el.textContent = pad(index + 1) + ' / ' + pad(total);
+  }
+
+  function selectThumb(thumb) {
+    var gallery = thumb.closest('.gallery');
+    if (!gallery) return;
+
+    var thumbs = $$('.thumb', gallery);
+    var main = $('.gallery__img', gallery);
+    var index = thumbs.indexOf(thumb);
+    var src = fullSrc(thumb);
+
+    thumbs.forEach(function (t) { t.classList.remove('is-active'); });
+    thumb.classList.add('is-active');
+    updateCount(gallery, index < 0 ? 0 : index, thumbs.length || 1);
+
+    if (!main || !src) return;
+
+    main.dataset.pendingSrc = src;
+    main.style.opacity = '0.3';
+
+    var pre = new Image();
+    pre.src = src;
+    var ready = pre.decode ? pre.decode().catch(function () { }) : Promise.resolve();
+    var minDelay = new Promise(function (res) { window.setTimeout(res, 110); });
+
+    Promise.all([ready, minDelay]).then(function () {
+      if (main.dataset.pendingSrc !== src) return; // another thumb won
+      main.src = src;
+      main.style.opacity = '1';
+    });
+  }
+
+  // Delegated so it keeps working if galleries are ever added later.
+  document.addEventListener('click', function (e) {
+    var thumb = e.target.closest ? e.target.closest('.thumb') : null;
+    if (thumb) {
+      e.preventDefault();
+      selectThumb(thumb);
+      return;
+    }
+    var view = e.target.closest ? e.target.closest('.gallery__view') : null;
+    if (view) {
+      e.preventDefault();
+      openLightbox(view.closest('.gallery'));
     }
   });
-});
 
-if (lightboxClose) {
-  lightboxClose.addEventListener('click', closeLightbox);
-}
+  // Safety net: a missing small thumbnail falls back to the full image
+  // instead of showing a broken icon.
+  document.addEventListener('error', function (e) {
+    var img = e.target;
+    if (!img || !img.parentElement || !img.parentElement.classList) return;
 
-if (lightboxOverlay) {
-  lightboxOverlay.addEventListener('click', (e) => {
-    if (e.target === lightboxOverlay) closeLightbox();
+    // A skill icon that fails (CDN hiccup) leaves a tidy empty chip rather
+    // than a browser broken-image glyph.
+    if (img.classList && img.classList.contains('tool-icon')) {
+      img.style.visibility = 'hidden';
+      return;
+    }
+
+    if (!img.parentElement.classList.contains('thumb')) return;
+    if (img.dataset.fallback) return;
+    var full = img.parentElement.getAttribute('data-full');
+    if (!full) return;
+    img.dataset.fallback = '1';
+    img.src = full;
+  }, true);
+
+  // Set every gallery's counter on load.
+  $$('.gallery').forEach(function (g) {
+    updateCount(g, 0, $$('.thumb', g).length || 1);
   });
 
-  lightboxOverlay.addEventListener('wheel', (e) => {
-    if (!lightboxImages.length) return;
+  // Kept for backwards compatibility with any older inline handler.
+  window.switchThumb = function (el) {
+    var thumb = el && el.closest ? el.closest('.thumb') : null;
+    if (thumb) selectThumb(thumb);
+  };
+
+  /* ------------------------------------------------------------------
+     9. LIGHTBOX
+     ------------------------------------------------------------------ */
+  var lb = $('#lightboxOverlay');
+  var lbImg = $('#lightboxImg');
+  var lbCount = $('#lightboxCounter');
+  var lbClose = $('#lightboxClose');
+  var lbPrev = $('#lightboxPrev');
+  var lbNext = $('#lightboxNext');
+
+  var lbItems = [];
+  var lbIndex = 0;
+  var lbLock = false;
+  var lbOpener = null;
+
+  function lbRender() {
+    if (!lbItems.length || !lbImg) return;
+    lbImg.src = lbItems[lbIndex];
+    if (lbCount) lbCount.textContent = (lbIndex + 1) + ' / ' + lbItems.length;
+  }
+
+  function openLightbox(gallery) {
+    if (!lb || !gallery) return;
+    var thumbs = $$('.thumb', gallery);
+    lbItems = thumbs.map(fullSrc).filter(Boolean);
+
+    if (!lbItems.length) {
+      var main = $('.gallery__img', gallery);
+      lbItems = main ? [main.src] : [];
+    }
+    if (!lbItems.length) return;
+
+    var activeIndex = thumbs.indexOf($('.thumb.is-active', gallery));
+    lbIndex = activeIndex >= 0 ? activeIndex : 0;
+
+    lbOpener = $('.gallery__view', gallery);
+    lbRender();
+    lb.classList.add('is-open');
+    document.body.classList.add('is-locked');
+    if (lbClose) lbClose.focus();
+  }
+
+  function closeLightbox() {
+    if (!lb) return;
+    lb.classList.remove('is-open');
+    document.body.classList.remove('is-locked');
+    if (lbOpener) { lbOpener.focus(); lbOpener = null; }
+  }
+
+  function lbStep(dir) {
+    if (!lbItems.length) return;
+    lbIndex = (lbIndex + dir + lbItems.length) % lbItems.length;
+    lbRender();
+  }
+
+  if (lbClose) lbClose.addEventListener('click', closeLightbox);
+  if (lbPrev) lbPrev.addEventListener('click', function () { lbStep(-1); });
+  if (lbNext) lbNext.addEventListener('click', function () { lbStep(1); });
+
+  if (lb) {
+    lb.addEventListener('click', function (e) {
+      if (e.target === lb || e.target.classList.contains('lightbox__stage')) closeLightbox();
+    });
+
+    lb.addEventListener('wheel', function (e) {
+      if (!lbItems.length) return;
+      e.preventDefault();
+      if (lbLock) return;
+      lbLock = true;
+      lbStep(e.deltaY > 0 ? 1 : -1);
+      window.setTimeout(function () { lbLock = false; }, 320);
+    }, { passive: false });
+
+    var touchX = null;
+    lb.addEventListener('touchstart', function (e) {
+      touchX = e.touches[0].clientX;
+    }, { passive: true });
+    lb.addEventListener('touchend', function (e) {
+      if (touchX === null) return;
+      var dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 48) lbStep(dx < 0 ? 1 : -1);
+      touchX = null;
+    }, { passive: true });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (!lb || !lb.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') lbStep(1);
+    if (e.key === 'ArrowLeft') lbStep(-1);
+  });
+
+  /* ------------------------------------------------------------------
+     10. COPY EMAIL
+     ------------------------------------------------------------------ */
+  var mailBtn = $('#copyEmailBtn');
+  var mailState = $('#copyEmailState');
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  if (mailBtn) {
+    mailBtn.addEventListener('click', function () {
+      var email = mailBtn.getAttribute('data-email') || '';
+      if (!email) return;
+
+      var done = function (ok) {
+        if (!mailState) return;
+        mailState.textContent = ok ? 'Copied' : 'Press Ctrl + C';
+        window.setTimeout(function () { mailState.textContent = 'Click to copy'; }, 2200);
+      };
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(email)
+          .then(function () { done(true); })
+          .catch(function () { done(fallbackCopy(email)); });
+      } else {
+        done(fallbackCopy(email));
+      }
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     11. SMOOTH ANCHORS (respects reduced motion, offsets the fixed head)
+     ------------------------------------------------------------------ */
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!link) return;
+    var id = link.getAttribute('href');
+    if (!id || id === '#') return;
+    var target = document.querySelector(id);
+    if (!target) return;
+
     e.preventDefault();
-    if (lightboxScrollLock) return;
-    lightboxScrollLock = true;
+    closeMenu();
+    var head = parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue('--head-h'), 10
+    ) || 68;
+    var top = target.getBoundingClientRect().top + window.pageYOffset - head - 8;
+    window.scrollTo({ top: top, behavior: reduceMotion ? 'auto' : 'smooth' });
+    if (history.replaceState) history.replaceState(null, '', id);
+  });
 
-    if (e.deltaY > 0) {
-      lightboxNext();
-    } else if (e.deltaY < 0) {
-      lightboxPrev();
+  /* ------------------------------------------------------------------
+     12. LOADING SCREEN
+     Progress tracks real work: the web fonts, the portrait and the first
+     project screenshots. It is deliberately impossible to get stuck on:
+     every asset resolves on error as well as on load, there is a hard
+     timeout, and the stylesheet lifts the sheet on its own if this script
+     never runs at all.
+     ------------------------------------------------------------------ */
+  (function initLoader() {
+    var loader = $('#loader');
+
+    if (!loader) {
+      pageReady.fire();
+      return;
     }
 
-    setTimeout(() => {
-      lightboxScrollLock = false;
-    }, 350);
-  }, { passive: false });
-}
+    var fillEl = $('#loaderFill');
+    var ruleEl = $('#loaderRule');
+    var pctEl = $('#loaderPct');
+    var stageEl = $('#loaderStage');
 
-document.addEventListener('keydown', (e) => {
-  if (!lightboxOverlay || !lightboxOverlay.classList.contains('active')) return;
-  if (e.key === 'Escape') closeLightbox();
-  if (e.key === 'ArrowRight') lightboxNext();
-  if (e.key === 'ArrowLeft') lightboxPrev();
-});
+    var MIN_MS = reduceMotion ? 300 : 1100;   // long enough to read
+    var MAX_MS = 5000;                        // never hold the page hostage
+    var CREEP_MS = 2600;                      // keeps the number alive meanwhile
+    var startedAt = Date.now();
+    var finished = false;
 
-// --- MOBILE NAVIGATION TOGGLE ---
-const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-const navLinks = document.getElementById('navLinks');
+    var STAGES = [
+      [0, 'Setting the type'],
+      [30, 'Loading the work'],
+      [62, 'Fetching screenshots'],
+      [88, 'Almost there'],
+      [100, 'Ready']
+    ];
 
-if (mobileMenuBtn && navLinks) {
-  mobileMenuBtn.addEventListener('click', () => {
-    navLinks.classList.toggle('mobile-open');
-  });
+    document.documentElement.classList.add('is-loading');
 
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navLinks.classList.remove('mobile-open');
-    });
-  });
-}
+    // --- what we are actually waiting for ---------------------------------
+    var jobs = [];
 
-// --- SCROLL-REVEAL ANIMATIONS (fade/slide content in as it enters view) ---
-function initScrollReveal() {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function watchImage(img) {
+      if (!img) return;
+      jobs.push(new Promise(function (resolve) {
+        if (img.complete) return resolve();
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', resolve, { once: true }); // never block
+      }));
+    }
 
-  // Section headings: title + intro copy above each content block.
-  const headingTargets = document.querySelectorAll(
-    '#about .section-header, #skills .section-header, #certifications .section-header, ' +
-    '#projects .section-header, #experience .section-header, #contact .section-header, ' +
-    '#skills .category-heading'
-  );
+    // Only images the browser actually fetches up front. Waiting on the
+    // lazy-loaded project screenshots would be waiting forever, because the
+    // browser will not request them until they are near the viewport.
+    $$('img:not([loading="lazy"])').forEach(watchImage);
 
-  // Card-style content grouped so siblings cascade in with a short stagger.
-  const staggerGroups = [
-    '#about .about-narrative',
-    '#about .principles-grid',
-    '#certifications .certs-grid',
-    '#contact .contact-methods-grid'
-  ];
+    if (document.fonts && document.fonts.ready) {
+      jobs.push(Promise.resolve(document.fonts.ready).catch(function () { }));
+    }
 
-  // Small pill-style content (skills) — same idea as staggerGroups but a
-  // lighter, quicker motion suited to many small tags instead of big cards.
-  const pillStaggerGroups = [
-    '#skills .skills-pill-cloud'
-  ];
+    jobs.push(new Promise(function (resolve) {
+      if (document.readyState === 'complete') return resolve();
+      window.addEventListener('load', resolve, { once: true });
+    }));
 
-  headingTargets.forEach(el => el.classList.add('reveal-heading'));
+    var total = jobs.length || 1;
+    var done = 0;
+    var target = 0;
+    var shown = 0;
 
-  const staggerItems = new Set();
-  staggerGroups.forEach(selector => {
-    document.querySelectorAll(selector).forEach(group => {
-      const items = group.querySelectorAll(':scope > *');
-      items.forEach((item, i) => {
-        item.classList.add('reveal-on-scroll', 'reveal-stagger');
-        item.style.setProperty('--reveal-delay', Math.min(i * 0.08, 0.4) + 's');
-        staggerItems.add(item);
+    jobs.forEach(function (job) {
+      job.then(function () {
+        done += 1;
+        target = Math.round((done / total) * 100);
       });
     });
-  });
 
-  pillStaggerGroups.forEach(selector => {
-    document.querySelectorAll(selector).forEach(group => {
-      const items = group.querySelectorAll(':scope > *');
-      items.forEach((item, i) => {
-        item.classList.add('reveal-pill', 'reveal-stagger');
-        item.style.setProperty('--reveal-delay', Math.min(i * 0.045, 0.4) + 's');
-        staggerItems.add(item);
-      });
-    });
-  });
-
-  // Fallback: any glass-capsule-sub card not already covered by a stagger
-  // group (keeps the effect working even if markup/classes shift later).
-  document.querySelectorAll('#about .glass-capsule-sub, #certifications .glass-capsule-sub, ' +
-    '#projects .glass-capsule-sub, #experience .glass-capsule-sub, #contact .glass-capsule-sub')
-    .forEach(el => {
-      if (!staggerItems.has(el)) {
-        el.classList.add('reveal-on-scroll');
+    // --- paint ------------------------------------------------------------
+    function stageFor(p) {
+      var label = STAGES[0][1];
+      for (var i = 0; i < STAGES.length; i++) {
+        if (p >= STAGES[i][0]) label = STAGES[i][1];
       }
-    });
+      return label;
+    }
 
-  if (prefersReducedMotion || typeof IntersectionObserver === 'undefined') {
-    // Show everything immediately; CSS media query also disables the
-    // transition/transform for reduced-motion users.
-    document.querySelectorAll('.reveal-on-scroll, .reveal-heading, .reveal-pill').forEach(el => {
-      el.classList.add('reveal-visible');
-    });
-    return;
-  }
-
-  // Reveal each element once, a little before it reaches the viewport, then
-  // stop watching it. The previous version toggled the class back off every
-  // time an element left view and re-added it on re-entry — on a fast
-  // scroll, elements were constantly starting their 0.6-0.7s fade mid-way
-  // through and never finishing, which is what made the Projects section
-  // feel laggy/delayed and made cards seem to "disappear" while scrolling.
-  // Triggering once with a positive bottom rootMargin gives the fade time
-  // to finish before the element is actually on screen, and unobserving
-  // afterward also means the IntersectionObserver stops doing work on
-  // sections you've already scrolled past.
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('reveal-visible');
-        revealObserver.unobserve(entry.target);
+    function paint(p) {
+      if (fillEl) fillEl.style.setProperty('--p', p + '%');
+      if (ruleEl) ruleEl.style.width = p + '%';
+      if (pctEl) pctEl.textContent = p < 10 ? '0' + p : String(p);
+      if (stageEl) {
+        var label = stageFor(p);
+        if (stageEl.textContent !== label) stageEl.textContent = label;
       }
-    });
-  }, {
-    threshold: 0.01,
-    rootMargin: '0px 0px 200px 0px'
-  });
+    }
 
-  document.querySelectorAll('.reveal-on-scroll, .reveal-heading, .reveal-pill').forEach(el => {
-    revealObserver.observe(el);
-  });
-}
+    function finish() {
+      if (finished) return;
+      finished = true;
 
-// --- INITIALIZATION ---
-function init() {
-  resizeCanvas();
-  initTheme();
-  preloadFrames();
-  updateScrollProgress();
-  animationFrameId = requestAnimationFrame(animateScroll);
-  initScrollReveal();
-}
+      paint(100);
+      document.documentElement.classList.remove('is-loading');
+      loader.classList.add('is-done');
 
-// Responsive event listeners
-window.addEventListener('resize', resizeCanvas);
-window.addEventListener('orientationchange', () => {
-  setTimeout(resizeCanvas, 100);
-});
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', resizeCanvas);
-}
+      // Let the hero start moving while the sheet is still on its way up.
+      window.setTimeout(pageReady.fire, reduceMotion ? 0 : 160);
+      window.setTimeout(function () {
+        loader.classList.add('is-gone');
+      }, reduceMotion ? 60 : 1100);
+    }
 
-window.addEventListener('scroll', handleScroll, { passive: true });
+    // Ease the shown value toward the target so it never jumps or stalls at a
+    // number, and creep forward slightly while waiting so it always feels live.
+    function tick() {
+      if (finished) return;
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+      var elapsed = Date.now() - startedAt;
+      var ceiling = Math.max(target, Math.min(92, elapsed / CREEP_MS * 92));
+      shown += (ceiling - shown) * 0.08;
+
+      if (shown > 99.4) shown = 99.4;
+      paint(Math.round(shown));
+
+      if ((done >= total && elapsed >= MIN_MS) || elapsed >= MAX_MS) {
+        finish();
+        return;
+      }
+      window.requestAnimationFrame(tick);
+    }
+
+    paint(0);
+    window.requestAnimationFrame(tick);
+
+    // Belt and braces: even if the loop is throttled in a background tab.
+    window.setTimeout(finish, MAX_MS + 400);
+  })();
+})();
